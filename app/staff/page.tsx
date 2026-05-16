@@ -5,6 +5,30 @@ import type { Brief } from "@/lib/types";
 
 type Context = { guestId: string; propertyId: string };
 
+type CapturedNote = {
+  id: string;
+  transcript: string;
+  capturedAt: string;
+};
+
+interface SpeechRecognitionLike extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start: () => void;
+  stop: () => void;
+  onresult: ((this: SpeechRecognitionLike, ev: SpeechRecognitionEvent) => void) | null;
+  onerror: ((this: SpeechRecognitionLike, ev: Event) => void) | null;
+  onend: ((this: SpeechRecognitionLike, ev: Event) => void) | null;
+}
+
+type SpeechRecognitionEvent = Event & {
+  resultIndex: number;
+  results: ArrayLike<{ 0: { transcript: string }; isFinal: boolean; length: number }>;
+};
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
 export default function StaffPage() {
   const [brief, setBrief] = useState<Brief | null>(null);
   const [context, setContext] = useState<Context | null>(null);
@@ -12,7 +36,11 @@ export default function StaffPage() {
   const [connected, setConnected] = useState(false);
   const [pulse, setPulse] = useState(false);
   const [whispering, setWhispering] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [recentNote, setRecentNote] = useState<CapturedNote | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const interimRef = useRef<string>("");
 
   useEffect(() => {
     const primeAudio = () => {
@@ -90,6 +118,82 @@ export default function StaffPage() {
     }
   };
 
+  const sendNote = async (transcript: string) => {
+    if (!transcript.trim()) return;
+    try {
+      await fetch("/api/memory-note", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          transcript,
+          guestId: context?.guestId,
+          propertyId: context?.propertyId,
+        }),
+      });
+    } catch (err) {
+      console.warn("[memory-note] failed:", err);
+    }
+  };
+
+  const toggleVoiceNote = () => {
+    if (listening) {
+      recognitionRef.current?.stop();
+      return;
+    }
+
+    const Ctor =
+      (window as unknown as { SpeechRecognition?: SpeechRecognitionConstructor })
+        .SpeechRecognition ||
+      (window as unknown as { webkitSpeechRecognition?: SpeechRecognitionConstructor })
+        .webkitSpeechRecognition;
+
+    if (!Ctor) {
+      console.warn("[voice-note] SpeechRecognition unsupported in this browser");
+      return;
+    }
+
+    const recognition = new Ctor();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+
+    interimRef.current = "";
+
+    recognition.onresult = (event) => {
+      let interim = "";
+      let final = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const r = event.results[i];
+        if (r.isFinal) final += r[0].transcript;
+        else interim += r[0].transcript;
+      }
+      if (final) interimRef.current += final;
+      // we can show interim later if needed; for now just store final
+    };
+
+    recognition.onerror = () => {
+      setListening(false);
+    };
+
+    recognition.onend = () => {
+      setListening(false);
+      const transcript = interimRef.current.trim();
+      if (transcript) {
+        sendNote(transcript);
+      }
+      interimRef.current = "";
+    };
+
+    recognitionRef.current = recognition;
+    setListening(true);
+    try {
+      recognition.start();
+    } catch (err) {
+      console.warn("[voice-note] start failed:", err);
+      setListening(false);
+    }
+  };
+
   useEffect(() => {
     const es = new EventSource("/api/stream");
     es.onopen = () => setConnected(true);
@@ -107,6 +211,15 @@ export default function StaffPage() {
         setBrief(data.brief);
         setContext({ guestId: data.guestId, propertyId: data.propertyId });
         playChime();
+      } else if (data.type === "note") {
+        setRecentNote({
+          id: data.note.id,
+          transcript: data.note.transcript,
+          capturedAt: data.note.capturedAt,
+        });
+        setTimeout(() => {
+          setRecentNote((curr) => (curr?.id === data.note.id ? null : curr));
+        }, 6500);
       }
     };
     return () => es.close();
@@ -122,6 +235,16 @@ export default function StaffPage() {
           <h1 className="font-serif text-3xl mt-1">Menlo Park · Sand Hill Road</h1>
         </div>
         <div className="flex items-center gap-4 font-sans text-xs text-[var(--color-ink-faint)]">
+          <button
+            onClick={toggleVoiceNote}
+            className={`font-sans text-[10px] uppercase tracking-[0.3em] transition-colors ${
+              listening
+                ? "text-emerald-700 animate-pulse"
+                : "text-[var(--color-accent)] hover:text-[var(--color-ink)]"
+            }`}
+          >
+            {listening ? "Listening…" : "Voice Note"}
+          </button>
           {brief && (
             <button
               onClick={whisper}
@@ -153,6 +276,17 @@ export default function StaffPage() {
           </div>
         </div>
       </header>
+
+      {recentNote && (
+        <div className="mt-4 border border-[var(--color-rule)] bg-[var(--color-cream-tint)] px-5 py-3 max-w-3xl">
+          <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-accent)] mb-1">
+            Noted by staff
+          </p>
+          <p className="font-serif text-base italic leading-snug">
+            &ldquo;{recentNote.transcript}&rdquo;
+          </p>
+        </div>
+      )}
 
       {!brief && !computing && (
         <div className="flex-1 flex flex-col items-center justify-center py-32">

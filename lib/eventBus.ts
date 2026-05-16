@@ -1,8 +1,10 @@
 import type { Brief } from "./types";
+import type { StaffNote } from "./memoryLog";
 
 export type ChainEvent =
   | { type: "computing"; guestId: string; propertyId: string }
-  | { type: "brief"; brief: Brief; guestId: string; propertyId: string };
+  | { type: "brief"; brief: Brief; guestId: string; propertyId: string }
+  | { type: "note"; note: StaffNote };
 
 type Listener = (event: ChainEvent) => void;
 
