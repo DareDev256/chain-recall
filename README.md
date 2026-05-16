@@ -1,27 +1,40 @@
-# Chain Recall — Halcyon
+# Halcyon — chain-recall
 
 > Recognition, without asking.
 
-The silent institutional memory of a members' club chain. When a guest walks into ANY property — even one they've never visited — front-of-house staff is briefed on who they are, what they prefer, and how to treat them. The AI is invisible to the guest. Staff is just magically attentive.
+The silent institutional memory of a luxury hotel chain. When a member walks into ANY property — even one they've never visited — front-of-house staff is briefed on who they are, what they prefer, and how to treat them. The AI is invisible to the guest. Staff is just magically attentive.
 
-Built at the SF Anthropic Hackathon · May 2026 · by James Olusoga & Joshua Dare.
+**Built at the SF Anthropic Hackathon · May 2026 · by James Olusoga & Joshua Dare.**
+
+---
+
+## The pitch in one sentence
+
+> Your luxury hotel chain already pays for Oracle OPERA. Your front desk already enters every preference, allergy, complaint, amenity request. You are simply not using that data at the moment of arrival. **Halcyon is the AI layer that unlocks the data you already own.**
+
+We demo it deployed against the chain we'd target first: **Rosewood Hotels & Resorts** — 38 properties, 23 countries, all OPERA-backed via Hapi.
+
+Three real Rosewood properties anchor the demo:
+- **Rosewood Hong Kong** · Tsim Sha Tsui · Manor Club, HENRY, DarkSide, Asaya by Guerlain
+- **Rosewood Sand Hill** · Menlo Park · 16-acre estate, Madera (Michelin), 2025 NICOLEHOLLIS villas
+- **Rosewood London** · High Holborn · Holborn Dining Room, Scarfes Bar, Grand Manor House Wing (the only hotel suite in the world with its own postcode)
 
 ---
 
 ## What we shipped today
 
-- **3 mock guests × 3 mock properties** (Toronto, NYC, LA) — deep, specific, human histories
-- **Claude composes prep briefs live** from cross-property guest history via tool use (`get_guest_history`)
-- **Silent design** — guest sees zero AI surface. The agent is a quiet whisper to the staff
-- **Cross-property handoff is the magic** — facts from one property surface at another, automatically
-- **QR-triggered arrival** → SSE pushes brief to staff tablet in real time
-- **Cached fallback briefs** for wifi-flaky demo conditions
+- **Cross-property memory composer.** Claude with tool use (`get_guest_history`) reads the member's full history across every Rosewood property and writes a structured prep brief.
+- **Oracle OPERA adapter.** `lib/sources/opera.ts` is the production integration boundary. Today it points at the seed corpus. In production, it's the OHIP REST client.
+- **Brief schema with six load-bearing sections.** Arrival intel, accessibility (non-negotiable), prep actions, amenity replenishment (pre-placed in the room), suggested questions (verbatim staff scripts), local suggestions, discretion flags, emotional context.
+- **Live tablet wake.** SSE pushes the brief to `/staff` the moment the guest walks in. Loading skeleton + audio chime sell the magic.
+- **ElevenLabs earpiece.** `/api/whisper` synthesizes a butler-timbre audio brief for the bell captain's headset. Browser SpeechSynthesis fallback if the key is absent.
+- **Wifi parachute.** Every demo guest × property combo has a hand-tuned cached brief. The demo lands identically whether Claude responds or the network drops.
 
 ### How to run
 
 ```bash
 pnpm install
-cp .env.local.example .env.local   # add your ANTHROPIC_API_KEY
+cp .env.local.example .env.local   # add your ANTHROPIC_API_KEY (and optionally ELEVENLABS_API_KEY)
 pnpm dev
 ```
 
@@ -29,100 +42,179 @@ pnpm dev
 - `/staff` — Staff tablet (the demo screen)
 - `/arrive` — Member arrival trigger (the QR target)
 
-### The data flow
+### Demo flow
+
+1. Open `/staff` on a laptop — the tablet POV at **Rosewood Sand Hill**
+2. On phone (or another tab): open `/arrive`
+3. Tap a member's name:
+   - **Mei Lin Chen** — HK regular + London once, walks into Sand Hill first time
+   - **Marcus Okafor** — London regular + HK Manor Club, knee recovery, discretion preference
+   - **Priya Sharma** — HK regular, migraine trigger from fluorescents, Series A close
+   - **Daniel Edson** — London regular, just landed SFO from Tel Aviv via Heathrow, full arrival intel
+4. `/staff` shows "Reading institutional memory…", then the brief renders with a soft chime
+5. Press **Whisper** in the header to hear the earpiece audio brief
+6. Press **Reset** to demo again
+
+### Data flow
 
 ```
-QR scan  →  POST /api/arrive  →  compose() reads guest profile via Claude tool use
-                              →  publishes Brief to in-memory event bus
-                              →  GET /api/stream (SSE) pushes Brief to /staff page
-                              →  Staff page renders, member walks through the door
+QR scan  →  POST /api/arrive  →  publish "computing" event
+                              →  compose() reads guest profile via Claude tool use
+                              →  publish "brief" event on in-memory bus
+                              →  GET /api/stream (SSE) pushes to /staff
+                              →  staff page renders + chime + (optional) Whisper button
+                              →  member walks through the door
 ```
 
-If the Claude API errors or takes >4s, we fall back to a cached brief silently. Demo never breaks.
+If the Claude API errors or takes >6s, we fall back to a hand-tuned cached brief silently. The demo never breaks.
 
 ---
 
-## What we'd build next (production v1, ~4 weeks)
+## Why Rosewood
 
-Everything below is known-solved. Listed so reviewers see scope. We picked the slice that demos the magic; production hardens around it.
+| Signal | Why it matters |
+|---|---|
+| 38 hotels, 23 countries, 21+ in pipeline | Massive deployment surface; new-property cold-start is a real pain point |
+| Named Hapi customer (Hapi streams OPERA events to cloud) | Confirmed OPERA-native infrastructure |
+| Sonia Cheng publicly uses "predictive analytics," "knows you before you ask," "relationship hospitality" | The CEO is asking for this out loud |
+| Rosewood Elite is benefit-based, not points-based — staff knowledge IS the loyalty product | Halcyon is the missing infrastructure for the loyalty program they already market |
+| 2026 new property opens in SF, Milan, Rome, Crete, Shenzhen | Day-one cross-property memory for new locations |
+| Competitors (Aman, Four Seasons, Mandarin Oriental, Belmond) have no public AI prep-brief play | Open white space at the luxury tier |
+
+Full research: `research/rosewood.md` and `research/rosewood-properties.md`.
+
+---
+
+## Architecture
+
+```
+                  ┌─────────────────────────┐
+                  │   Oracle OPERA (PMS)    │   ← already deployed, already feeding
+                  │   + Hapi event stream   │     the chain with guest data today
+                  └────────────┬────────────┘
+                               │ OHIP REST
+                  ┌────────────▼────────────┐
+                  │  lib/sources/opera.ts   │   ← integration boundary
+                  │  (mock today, OHIP v1)  │
+                  └────────────┬────────────┘
+                               │
+                  ┌────────────▼────────────┐
+                  │  lib/compose.ts         │   ← Claude with tool use,
+                  │  composer (Opus 4.7)    │     SYSTEM_PROMPT enforces Brief schema
+                  └────────────┬────────────┘
+                               │
+                  ┌────────────▼────────────┐
+                  │  lib/eventBus.ts (SSE)  │   ← in-memory in demo,
+                  │  pub/sub                │     Redis pub/sub in prod
+                  └─────┬─────────────┬─────┘
+                        │             │
+                ┌───────▼─────┐  ┌────▼──────────┐
+                │  /staff     │  │ /api/whisper  │   ← ElevenLabs (butler voice)
+                │  tablet UI  │  │ earpiece TTS  │     or browser SpeechSynthesis
+                └─────────────┘  └───────────────┘
+```
+
+---
+
+## What we'd build next (production v1, ~4–6 weeks)
+
+Listed so reviewers see scope. We picked the slice that demos the magic; production hardens around it.
 
 ### Presence detection (replacing QR)
-
-- BLE beacons at property entry — low-energy, no phone interaction required
-- License plate recognition at valet (Rekor / Vaxtor)
+- BLE beacons at property entry
+- License-plate recognition at valet
 - Member app geofence + opt-in foreground notification
-- Walk-in fallback: staff manually tags an unrecognized member at the front desk
+- Walk-in fallback: staff manually tags an unrecognized member
 
 ### Voice layer (staff-side only)
-
-- Discreet earpiece whisper to staff as a guest approaches — staff walks up already knowing
-- ElevenLabs / Cartesia for natural voice; private channel per staff member
-- Ambient room listening for memory ingestion ("I'd love a chamomile" → memory grows for next visit)
-- **Never** voice TO the guest. The guest only experiences a human who knows them.
+- ElevenLabs earpiece whisper as guest approaches — staff walks up already knowing
+- Ambient room listening for memory ingestion (consented) — "I'd love a chamomile" → memory grows
+- **Never** voice TO the guest
 
 ### Memory layer
-
-- Postgres + pgvector for retrieval (or Qdrant if scale demands)
+- Postgres + pgvector for retrieval against Hapi's OPERA event stream
 - Every memory carries a ledger: which property created it, which staff member, which interaction
 - Decay + conflict resolution — 90-day relevance half-life, contradicting facts surface for human review
-- Source-grounded composition — every line of a brief can be expanded to "where did this come from?"
+- Source-grounded composition — every line of a brief expands to "where did this come from?"
 
-### Staff role hierarchy & permissions
+### MCP server
+- Wrap the composer as an MCP server so Claude Desktop, the Rosewood app, or any Claude-powered surface can call `get_guest_history` and `compose_brief` as tools
+- Per-property access scoping
+- Per-staff-role tool surface (concierge sees full toolkit; housekeeping sees a subset)
 
+### Staff role permissions
 - Concierge sees the full brief
 - Housekeeping sees only room-prep details (allergens, temp, turndown)
 - F&B sees only dietary + drink preferences
 - Audit log on every read — guest can request a full access history
 
-### Property system integrations
-
-- Hotels: Opera Cloud, Mews, Cloudbeds
-- Members' clubs: Salto KS / Brivo for access control
-- F&B: Toast, Resy, OpenTable
-- Boutique fitness: Mindbody, ABC Glofox
-
 ### Guest trust & compliance
-
 - Guest portal: view, edit, redact, full-delete memory (GDPR Art. 17, CCPA §1798.105)
-- Opt-in only — first stay collects nothing automatically; explicit consent flow
-- Per-property opt-out ("don't share this visit with other locations")
+- Opt-in only — first stay collects nothing automatically
+- Per-property opt-out
 - SOC 2 Type II target by month 6
 - Data residency per property (EU stays don't leave EU)
 
 ### Quality loop
-
 - Staff one-tap feedback after each interaction: "useful / partial / wrong"
 - Briefs flagged "wrong" retrain retrieval ranking
 - Weekly digest per property GM: top memories driving NPS lift
 
 ### Brief composition controls
-
-- Per-brand voice template (Aman ≠ Equinox ≠ Soho House)
-- Length cap enforced (60 words max — staff scan, not read)
+- Per-brand voice template (Rosewood ≠ Aman ≠ Soho House)
+- Length cap enforced (staff scan, not read)
 - Tone audit: no flowery language, no "personality" — neutral utility
 - Multilingual brief generation for international staff
-
-### Edge cases handled on day one
-
-- Anonymous walk-ins: never stored
-- Conflicting preferences across properties: timestamp wins, both shown if recent
-- Group bookings: separate briefs per guest, aggregate brief for host
-- VIP / sensitive guests: tier-gated access, no system-wide search
 
 ---
 
 ## Stack
 
-- Next.js 16.2.6 (App Router) · React 19 · TypeScript
-- Tailwind 4
-- Anthropic SDK (`claude-opus-4-7`) with tool use
-- Plain JSON corpus, in-memory event bus (would be Postgres + Redis pubsub in prod)
-- Server-Sent Events for live staff push
-- Browser `speechSynthesis` for the staff earpiece whisper (production: ElevenLabs)
+- **Next.js 16.2.6** (App Router) · React 19 · TypeScript
+- **Tailwind 4**
+- **Anthropic SDK** (`claude-opus-4-7`) with tool use
+- **ElevenLabs** TTS (default voice: George — British butler timbre)
+- **Server-Sent Events** for live staff push (in-memory event bus today, Redis pub/sub in prod)
+- Cream / ink / bronze quiet-luxury aesthetic — Cormorant Garamond + Inter
+
+---
 
 ## Team
 
-- **James Olusoga** (DareDev256) — data layer, Claude agent, API routes, infrastructure
-- **Joshua Dare** — brand, demo flow, presentation
+- **James Olusoga** (DareDev256) — data layer, Claude agent, API routes, audio integration, infrastructure
+- **Joshua Dare** — brand, demo flow, presentation, on-site customer discovery
 
-Toronto · May 2026
+**Toronto · May 2026** · For the SF Anthropic Hackathon.
+
+---
+
+## Repo map
+
+```
+chain-recall/
+├── app/
+│   ├── api/
+│   │   ├── arrive/route.ts       POST: publish events, run composer
+│   │   ├── stream/route.ts       GET:  SSE feed for the staff tablet
+│   │   └── whisper/route.ts      POST: ElevenLabs / SpeechSynthesis fallback
+│   ├── arrive/page.tsx           QR target — 4 guests, 3 properties
+│   ├── staff/page.tsx            Tablet UI — full brief render, Whisper, Reset
+│   ├── page.tsx                  Title card (Josh's lane)
+│   ├── brand-tokens.ts           Brand palette + chain name (Josh's lane)
+│   └── globals.css               Quiet-luxury color tokens
+├── lib/
+│   ├── compose.ts                Claude composer with tool use + cache fallback
+│   ├── data.ts                   Seed corpus — 4 guests, 3 Rosewood properties
+│   ├── cache.ts                  Hand-tuned briefs (wifi parachute)
+│   ├── eventBus.ts               In-memory pub/sub for SSE
+│   ├── sources/opera.ts          Oracle OPERA mock adapter (production: OHIP)
+│   ├── types.ts                  Brief / Visit / GuestProfile / etc.
+│   └── whisper.ts                Compose the audio script from a Brief
+├── research/
+│   ├── rosewood.md               Strategic positioning brief
+│   └── rosewood-properties.md    Per-property scrape (HK / Sand Hill / London)
+├── BUILD-LOG.md                  Decision journal (video script source)
+├── SHOTLIST.md                   Demo video shot list
+├── HANDOFF.md                    Josh's brand-only lane
+└── README.md                     You are here.
+```

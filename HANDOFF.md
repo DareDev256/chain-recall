@@ -1,66 +1,70 @@
 # HANDOFF — Josh
 
-Hackathon team: James (data + agent + API) · Josh (brand + demo flow)
+Hackathon team: James (data + agent + API + audio) · Josh (brand + demo flow)
 Target: SF Anthropic Hackathon · best-demo win
-Build window: ~8 hours
+Build window: ~6 hours
+
+> **Pivot note (afternoon):** We pivoted demo properties from fictional Halcyon Toronto/NYC/LA to real Rosewood: **Hong Kong**, **Sand Hill (Menlo Park)**, **London**. "Halcyon" is our product/platform name; "Rosewood" is the chain we demo it on. Updated section below.
 
 ## What this project is — 60 sec
 
-A members' club chain has 3 properties (Toronto, NYC, LA). When a member walks into ANY property — including one they've never been to — the staff tablet lights up with a personalized prep brief built from the member's history across the OTHER properties. AI is invisible to the guest. Staff appears magically attentive.
+A real luxury hotel chain has multiple properties globally. When a member walks into ANY property — including one they've never been to — the staff tablet lights up with a personalized prep brief built from the member's history across the OTHER properties. AI is invisible to the guest. Staff appears magically attentive.
+
+We pitch this as **Halcyon** — the AI memory layer that sits on top of the chain's existing Oracle OPERA system. Demo deployment: **Rosewood Hotels & Resorts** (38 properties, 23 countries, all OPERA-backed). Demo properties: Rosewood Hong Kong, Rosewood Sand Hill, Rosewood London.
 
 Demo flow:
-1. Open `/staff` on a laptop (this is the "tablet")
-2. On phone, scan QR code that opens `/arrive`
-3. Tap a member's name → POST to `/api/arrive` → SSE pushes brief → `/staff` lights up live
-4. Read brief out loud to judges. The cross-property facts are the magic.
+1. Open `/staff` on a laptop — it's the tablet at **Rosewood Sand Hill**
+2. On phone (or another tab), open `/arrive`
+3. Tap a member's name → POST to `/api/arrive` → SSE pushes brief to `/staff`
+4. The tablet lights up. Read the brief out loud. Cross-property facts are the magic.
 
 ## What you own
 
 | File / Path | What goes here |
 |---|---|
-| `public/brand/logo.svg` | Wordmark or monogram. SVG. Roughly 200×60. Inks on transparent. |
-| `public/brand/property-toronto.jpg` | Atmosphere photo. 1600×900. Heritage building / library mood. |
-| `public/brand/property-nyc.jpg` | Atmosphere photo. 1600×900. SoHo loft / listening room mood. |
-| `public/brand/property-la.jpg` | Atmosphere photo. 1600×900. Open courtyard / screening room mood. |
-| `app/brand-tokens.ts` | Edit the constants (chain name, tagline, palette hex codes) — don't change the shape |
+| `public/brand/logo.svg` | Halcyon wordmark or monogram. SVG. Roughly 200×60. Inks on transparent. |
+| `public/brand/property-hong-kong.jpg` | Atmosphere photo. 1600×900. Rosewood HK / Victoria Harbour vertical luxury mood. |
+| `public/brand/property-sand-hill.jpg` | Atmosphere photo. 1600×900. California Mission-ranch estate, low-rise, golden hour. |
+| `public/brand/property-london.jpg` | Atmosphere photo. 1600×900. Edwardian Holborn heritage, Belle Époque interior. |
+| `app/brand-tokens.ts` | Edit the constants (product name "Halcyon", tagline, palette hex codes) — don't change the shape |
 | `app/page.tsx` | The landing/title card. You can rewrite layout, fonts, hero treatment — just keep the two CTAs ("Staff Tablet" → `/staff`, "Member Arrival" → `/arrive`) |
 
 ## What you DON'T touch
 
 Hard firewall:
 
-- `lib/*` — data, agent, types. If something here looks wrong, message James.
-- `app/api/*` — route handlers.
-- `app/staff/page.tsx` — the demo screen. (Style edits OK at hour 5 if time permits, with James review.)
+- `lib/*` — data, agent, types, OPERA adapter, ElevenLabs whisper. If something here looks wrong, message James.
+- `app/api/*` — route handlers (arrive, stream, whisper).
+- `app/staff/page.tsx` — the demo screen. Style edits OK at hour 5 if time permits, with James review.
 - `app/arrive/page.tsx` — QR target page.
 
 If you think you need to touch one of these — ping James. There's almost always a brand-layer way to get the same effect.
 
 ## Aesthetic direction
 
-**Quiet luxury.** Soho House / Aman / NeueHouse reference frame.
+**Quiet luxury.** Rosewood / Aman / NeueHouse reference frame.
 
 - Background: cream `#faf7f2`. Not white.
 - Type: heading in a true editorial serif (Cormorant Garamond is already wired up; you can swap to GT Sectra, Caslon, Editorial New if you have one). Body in Inter.
 - Decoration: anti-decoration. Negative space is the design.
 - Logo: a wordmark in the serif beats a graphic mark. Single weight. No gradient, no shadow.
-- Property images: muted, slightly underexposed, no people in frame. Architecture > activity.
+- Property images: muted, slightly underexposed, no people in frame. Architecture over activity.
 - Palette: see `app/brand-tokens.ts`. Cream + ink + one warm bronze accent (`#6b5b3e`). NO additional colors.
 
-When in doubt: would Aman put this on their site? If no, don't ship it.
+When in doubt: would Rosewood put this on their site? If no, don't ship it.
 
 ## Asset generation (nano-banana)
 
 Use the `nano-banana` skill or any image gen. Suggested prompts:
 
-- **Logo**: "Single-word wordmark 'Halcyon' in a refined editorial serif (Cormorant Garamond or similar). Single color, deep ink on transparent. Minimal, confident, no flourishes."
-- **Toronto plate**: "Heritage building interior, leather chairs, warm low light, library bookshelves, members' club mood, no people, slightly underexposed."
-- **NYC plate**: "SoHo loft, exposed beams, soft jazz lighting, low velvet seating, candle-lit, members' club mood, no people."
-- **LA plate**: "Open courtyard at dusk, palms, low concrete walls, single firepit, members' club mood, no people."
+- **Logo**: "Single-word wordmark 'Halcyon' in a refined editorial serif (Cormorant Garamond or similar). Single color, deep ink on transparent. Minimal, confident, no flourishes. The wordmark for a luxury hospitality AI product."
+- **Hong Kong plate**: "Rosewood Hong Kong interior, Victoria Harbour view from a vertical Asian luxury hotel tower at dusk, warm low light, Manor Club lounge mood, no people, slightly underexposed."
+- **Sand Hill plate**: "Rosewood Sand Hill estate exterior, California Mission-ranch low-rise architecture, 16-acre property, palms, golden-hour light, no people, members' club mood."
+- **London plate**: "Rosewood London interior, Edwardian Belle Époque, converted Pearl Assurance building, oak panelling, chandelier mood, soft lamp light, no people, slightly underexposed."
 
 Save to `public/brand/` with the exact filenames in the table above.
 
-## The JSON contract (so we don't conflict)
+## The Brief contract (so we don't conflict)
 
 When the staff page renders a brief, the data shape is:
 
@@ -68,36 +72,54 @@ When the staff page renders a brief, the data shape is:
 type Brief = {
   guestName: string;
   visitContext: string;
+  arrivalIntel?: { expectedAt; flightContext; baggageNote; energyState };
+  accessibilityNeeds: string[];
   prepActions: string[];
+  amenityReplenishment: { item; sourcedFrom }[];
+  suggestedQuestions: { question; basedOn }[];
+  localSuggestions?: { title; detail; walkingMinutes?; basedOn }[];
+  discretionFlags?: string[];
   emotionalNotes: string;
   sourceVisits: string[];
 };
 ```
 
-You don't need to render this — James already did. But if you tweak the staff page styling, this is what's in the data.
+You don't need to render this — James already did. Style edits welcome.
 
 ## Sync moments
 
 - **Hour 1**: Send James a screenshot of your logo + one property plate. Lock the brand name.
 - **Hour 3**: Push your branch. James pulls + checks.
 - **Hour 5**: Final brand merge. After this, freeze brand changes.
-- **Hour 6+**: Demo rehearsal together. You run the QR scan.
+- **Hour 6+**: Demo rehearsal together. See `SHOTLIST.md` for the video shot list.
 
 ## Demo day flow (you lead the narration)
 
-You're the better presenter. You drive the script while James drives the laptop:
+See `SHOTLIST.md` for the full scene-by-scene script. Headline beats:
 
-1. (0:00) "This is Halcyon. Three properties — Toronto, NYC, LA."
-2. (0:15) "Sarah is a member. She's stayed at Toronto twice, NYC once. She's never been to LA."
-3. (0:30) "Today, she walks in." (James triggers QR / arrival)
-4. (0:35–1:00) Read the brief out loud. SLOW DOWN on the cross-property line ("Sarah saw none of this. She saw a person who knew her.")
-5. (1:00–1:30) "Most chains lose their guest at the property line. Ours doesn't. The AI is the chain's institutional memory — silent, cross-property, always on."
+1. (0:00) "Rosewood. 38 properties, 23 countries, all running Oracle OPERA."
+2. (0:15) "Mei Lin Chen is a member. She's stayed at Hong Kong twice, London once."
+3. (0:30) "Today, she walks into Sand Hill." (James triggers arrival)
+4. (0:35–1:00) Read brief out loud. SLOW DOWN on the cross-property line ("Mei Lin saw none of this. She saw a person who knew her.")
+5. (1:00–1:30) Reset. Trigger Mr. Edson. Highlight arrival intel block: "EL AL from Tel Aviv, seven hours, two checked bags, bell concierge at the portico."
+6. (1:30) Press "Whisper" — earpiece audio plays.
+7. (1:45) Close: "Halcyon is the AI memory layer for the luxury chain you already run."
 
 ## Branching
 
 ```bash
+git clone https://github.com/DareDev256/chain-recall
+cd chain-recall
+pnpm install
 git checkout -b brand/josh
-# work
+pnpm dev
+```
+
+You can run the demo without any API keys — `lib/cache.ts` has hand-tuned briefs for all 4 demo guests at Sand Hill that fire when Anthropic is absent. Drop a key into `.env.local` later if you want to see live composition.
+
+When you're ready:
+
+```bash
 git add public/brand/ app/brand-tokens.ts app/page.tsx
 git commit -m "brand: logo + property plates + tokens"
 git push origin brand/josh
