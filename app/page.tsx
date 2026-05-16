@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <main className="flex flex-1 flex-col items-center justify-center px-8 py-24 text-center">
       <p className="font-sans text-xs uppercase tracking-[0.3em] text-[var(--color-ink-faint)] mb-10">
-        {BRAND.chainName} · Member Properties
+        {BRAND.productName} · {BRAND.deploymentChain}
       </p>
       <h1 className="font-serif text-7xl md:text-8xl font-normal leading-[0.95] tracking-tight max-w-4xl">
         Recognition,<br />without asking.
@@ -18,7 +18,7 @@ export default function Home() {
           href="/staff"
           className="px-8 py-3 border border-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-cream)] transition-colors"
         >
-          Staff Tablet · LA
+          Staff Tablet · Sand Hill
         </Link>
         <Link
           href="/arrive"

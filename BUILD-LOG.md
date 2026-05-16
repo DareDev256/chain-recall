@@ -1,4 +1,4 @@
-# BUILD LOG — Halcyon (chain-recall)
+# BUILD LOG — Sandy Chain-Recall (chain-recall)
 
 **Event:** SF Anthropic Hackathon · 2026-05-16
 **Team:** James Olusoga (data + agent + API + audio) · Joshua Dare (brand + demo flow)
@@ -11,7 +11,7 @@ This file is the source-of-truth journal of every decision and why we made it. I
 
 ## The pitch in one sentence
 
-> Your luxury hotel chain already pays for Oracle OPERA. Your front desk already enters every preference, allergy, complaint, amenity request. You are simply not using that data at the moment of arrival. **Halcyon** is the AI layer that unlocks the data you already own — so when a member walks into any property, your staff already knows.
+> Your luxury hotel chain already pays for Oracle OPERA. Your front desk already enters every preference, allergy, complaint, amenity request. You are simply not using that data at the moment of arrival. **Sandy Chain-Recall** is the AI layer that unlocks the data you already own — so when a member walks into any property, your staff already knows.
 
 We demo it deployed against the chain we'd target first: **Rosewood Hotels & Resorts** — 38 properties, 23 countries, all OPERA-backed via Hapi. Three real Rosewood properties anchor the demo: **Hong Kong**, **Sand Hill (Menlo Park)**, **London**.
 
@@ -52,7 +52,7 @@ Full property research at `research/rosewood-properties.md` and `research/rosewo
 
 ## Decision 3 · Three properties for the demo *(commit 73dd87b)*
 
-Each guest walks into **Rosewood Sand Hill** for the first time. The staff there could not possibly know them from local ledgers — but Halcyon does, because the institutional memory is chain-wide.
+Each guest walks into **Rosewood Sand Hill** for the first time. The staff there could not possibly know them from local ledgers — but Sandy Chain-Recall does, because the institutional memory is chain-wide.
 
 **Rosewood Hong Kong** (18 Salisbury Road, Tsim Sha Tsui)
 - Manor Club tier on the 40th floor
@@ -72,7 +72,7 @@ Each guest walks into **Rosewood Sand Hill** for the first time. The staff there
 - Mirror Room (afternoon tea)
 - **Grand Manor House Wing** — the only hotel suite in the world with its own postcode, private entrance from High Holborn, private lift, 1,991 sq ft
 
-**Naming pattern that sells the pitch:** Rosewood ALREADY uses "Manor" as a recurring suite-tier idiom across multiple properties (Manor Club at HK, Grand Manor House Wing at London). They've already invented the cross-property language. Halcyon operationalizes the cross-property *memory*.
+**Naming pattern that sells the pitch:** Rosewood ALREADY uses "Manor" as a recurring suite-tier idiom across multiple properties (Manor Club at HK, Grand Manor House Wing at London). They've already invented the cross-property language. Sandy Chain-Recall operationalizes the cross-property *memory*.
 
 ---
 

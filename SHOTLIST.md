@@ -1,4 +1,4 @@
-# Halcyon — Demo Video Shot List
+# Sandy Chain-Recall — Demo Video Shot List
 
 For Josh (presenter, on camera) and James (driving the laptop, off camera).
 
@@ -77,7 +77,7 @@ For Josh (presenter, on camera) and James (driving the laptop, off camera).
 ### Scene 5 — The pitch (1:45–2:00)
 
 **Josh, looking back at camera:**
-> "Most luxury chains lose their guest at the property line. Rosewood doesn't have to. We sit on top of their existing Oracle OPERA system — the data they already capture, the data they already pay to store. We're the AI layer that turns it into the moment of arrival. Halcyon."
+> "Most luxury chains lose their guest at the property line. Rosewood doesn't have to. We sit on top of their existing Oracle OPERA system — the data they already capture, the data they already pay to store. We're the AI layer that turns it into the moment of arrival. Sandy Chain-Recall."
 
 **Final beat:** A 2-second hold on the staff page screen with the brief still up.
 

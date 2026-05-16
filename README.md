@@ -1,4 +1,4 @@
-# Halcyon — chain-recall
+# Sandy Chain-Recall — chain-recall
 
 > Recognition, without asking.
 
@@ -10,7 +10,7 @@ The silent institutional memory of a luxury hotel chain. When a member walks int
 
 ## The pitch in one sentence
 
-> Your luxury hotel chain already pays for Oracle OPERA. Your front desk already enters every preference, allergy, complaint, amenity request. You are simply not using that data at the moment of arrival. **Halcyon is the AI layer that unlocks the data you already own.**
+> Your luxury hotel chain already pays for Oracle OPERA. Your front desk already enters every preference, allergy, complaint, amenity request. You are simply not using that data at the moment of arrival. **Sandy Chain-Recall is the AI layer that unlocks the data you already own.**
 
 We demo it deployed against the chain we'd target first: **Rosewood Hotels & Resorts** — 38 properties, 23 countries, all OPERA-backed via Hapi.
 
@@ -77,7 +77,7 @@ If the Claude API errors or takes >6s, we fall back to a hand-tuned cached brief
 | 38 hotels, 23 countries, 21+ in pipeline | Massive deployment surface; new-property cold-start is a real pain point |
 | Named Hapi customer (Hapi streams OPERA events to cloud) | Confirmed OPERA-native infrastructure |
 | Sonia Cheng publicly uses "predictive analytics," "knows you before you ask," "relationship hospitality" | The CEO is asking for this out loud |
-| Rosewood Elite is benefit-based, not points-based — staff knowledge IS the loyalty product | Halcyon is the missing infrastructure for the loyalty program they already market |
+| Rosewood Elite is benefit-based, not points-based — staff knowledge IS the loyalty product | Sandy Chain-Recall is the missing infrastructure for the loyalty program they already market |
 | 2026 new property opens in SF, Milan, Rome, Crete, Shenzhen | Day-one cross-property memory for new locations |
 | Competitors (Aman, Four Seasons, Mandarin Oriental, Belmond) have no public AI prep-brief play | Open white space at the luxury tier |
 

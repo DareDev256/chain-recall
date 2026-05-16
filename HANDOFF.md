@@ -4,13 +4,13 @@ Hackathon team: James (data + agent + API + audio) · Josh (brand + demo flow)
 Target: SF Anthropic Hackathon · best-demo win
 Build window: ~6 hours
 
-> **Pivot note (afternoon):** We pivoted demo properties from fictional Halcyon Toronto/NYC/LA to real Rosewood: **Hong Kong**, **Sand Hill (Menlo Park)**, **London**. "Halcyon" is our product/platform name; "Rosewood" is the chain we demo it on. Updated section below.
+> **Pivot note (afternoon):** We pivoted demo properties from fictional Sandy Chain-Recall Toronto/NYC/LA to real Rosewood: **Hong Kong**, **Sand Hill (Menlo Park)**, **London**. "Sandy Chain-Recall" is our product/platform name; "Rosewood" is the chain we demo it on. Updated section below.
 
 ## What this project is — 60 sec
 
 A real luxury hotel chain has multiple properties globally. When a member walks into ANY property — including one they've never been to — the staff tablet lights up with a personalized prep brief built from the member's history across the OTHER properties. AI is invisible to the guest. Staff appears magically attentive.
 
-We pitch this as **Halcyon** — the AI memory layer that sits on top of the chain's existing Oracle OPERA system. Demo deployment: **Rosewood Hotels & Resorts** (38 properties, 23 countries, all OPERA-backed). Demo properties: Rosewood Hong Kong, Rosewood Sand Hill, Rosewood London.
+We pitch this as **Sandy Chain-Recall** — the AI memory layer that sits on top of the chain's existing Oracle OPERA system. Demo deployment: **Rosewood Hotels & Resorts** (38 properties, 23 countries, all OPERA-backed). Demo properties: Rosewood Hong Kong, Rosewood Sand Hill, Rosewood London.
 
 Demo flow:
 1. Open `/staff` on a laptop — it's the tablet at **Rosewood Sand Hill**
@@ -22,11 +22,11 @@ Demo flow:
 
 | File / Path | What goes here |
 |---|---|
-| `public/brand/logo.svg` | Halcyon wordmark or monogram. SVG. Roughly 200×60. Inks on transparent. |
+| `public/brand/logo.svg` | Sandy Chain-Recall wordmark or monogram. SVG. Roughly 200×60. Inks on transparent. |
 | `public/brand/property-hong-kong.jpg` | Atmosphere photo. 1600×900. Rosewood HK / Victoria Harbour vertical luxury mood. |
 | `public/brand/property-sand-hill.jpg` | Atmosphere photo. 1600×900. California Mission-ranch estate, low-rise, golden hour. |
 | `public/brand/property-london.jpg` | Atmosphere photo. 1600×900. Edwardian Holborn heritage, Belle Époque interior. |
-| `app/brand-tokens.ts` | Edit the constants (product name "Halcyon", tagline, palette hex codes) — don't change the shape |
+| `app/brand-tokens.ts` | Edit the constants (product name "Sandy Chain-Recall", tagline, palette hex codes) — don't change the shape |
 | `app/page.tsx` | The landing/title card. You can rewrite layout, fonts, hero treatment — just keep the two CTAs ("Staff Tablet" → `/staff`, "Member Arrival" → `/arrive`) |
 
 ## What you DON'T touch
@@ -57,7 +57,7 @@ When in doubt: would Rosewood put this on their site? If no, don't ship it.
 
 Use the `nano-banana` skill or any image gen. Suggested prompts:
 
-- **Logo**: "Single-word wordmark 'Halcyon' in a refined editorial serif (Cormorant Garamond or similar). Single color, deep ink on transparent. Minimal, confident, no flourishes. The wordmark for a luxury hospitality AI product."
+- **Logo**: "Single-word wordmark 'Sandy Chain-Recall' in a refined editorial serif (Cormorant Garamond or similar). Single color, deep ink on transparent. Minimal, confident, no flourishes. The wordmark for a luxury hospitality AI product."
 - **Hong Kong plate**: "Rosewood Hong Kong interior, Victoria Harbour view from a vertical Asian luxury hotel tower at dusk, warm low light, Manor Club lounge mood, no people, slightly underexposed."
 - **Sand Hill plate**: "Rosewood Sand Hill estate exterior, California Mission-ranch low-rise architecture, 16-acre property, palms, golden-hour light, no people, members' club mood."
 - **London plate**: "Rosewood London interior, Edwardian Belle Époque, converted Pearl Assurance building, oak panelling, chandelier mood, soft lamp light, no people, slightly underexposed."
@@ -103,7 +103,7 @@ See `SHOTLIST.md` for the full scene-by-scene script. Headline beats:
 4. (0:35–1:00) Read brief out loud. SLOW DOWN on the cross-property line ("Mei Lin saw none of this. She saw a person who knew her.")
 5. (1:00–1:30) Reset. Trigger Mr. Edson. Highlight arrival intel block: "EL AL from Tel Aviv, seven hours, two checked bags, bell concierge at the portico."
 6. (1:30) Press "Whisper" — earpiece audio plays.
-7. (1:45) Close: "Halcyon is the AI memory layer for the luxury chain you already run."
+7. (1:45) Close: "Sandy Chain-Recall is the AI memory layer for the luxury chain you already run."
 
 ## Branching
 

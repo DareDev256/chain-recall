@@ -14,7 +14,7 @@ const sans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Halcyon · Chain Recall",
+  title: "Sandy Chain-Recall · Rosewood",
   description: "The silent institutional memory of the chain.",
 };
 

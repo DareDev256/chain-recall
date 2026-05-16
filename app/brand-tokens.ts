@@ -6,22 +6,24 @@
  */
 
 export const BRAND = {
-  chainName: "Halcyon",
+  productName: "Sandy Chain-Recall",
   tagline: "Recognition, without asking.",
   subtitle: "The silent institutional memory of the chain.",
-  cities: ["Toronto", "New York", "Los Angeles"],
+  deploymentChain: "Rosewood Hotels & Resorts",
+  cities: ["Hong Kong", "Menlo Park", "London"],
   // logo path under /public/brand/
   logo: "/brand/logo.svg",
 };
 
 export const PROPERTY_PLATES = {
-  toronto: "/brand/property-toronto.jpg",
-  nyc: "/brand/property-nyc.jpg",
-  la: "/brand/property-la.jpg",
+  "hong-kong": "/brand/property-hong-kong.jpg",
+  "sand-hill": "/brand/property-sand-hill.jpg",
+  london: "/brand/property-london.jpg",
 };
 
 export const PALETTE = {
   cream: "#faf7f2",
+  creamTint: "#f3ede2",
   ink: "#1a1a1a",
   inkSoft: "#4a4a4a",
   inkFaint: "#8a8a8a",
