@@ -224,7 +224,7 @@ export default function StaffPage() {
       const res = await fetch("/api/synth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: line.text }),
+        body: JSON.stringify({ text: line.text, voiceStyle: "warm" }),
       });
       const contentType = res.headers.get("Content-Type") || "";
       if (contentType.startsWith("audio/")) {
@@ -282,7 +282,7 @@ export default function StaffPage() {
         const ackRes = await fetch("/api/synth", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: ack }),
+          body: JSON.stringify({ text: ack, voiceStyle: "ack" }),
         });
         const ackType = ackRes.headers.get("Content-Type") || "";
         if (ackType.startsWith("audio/")) {

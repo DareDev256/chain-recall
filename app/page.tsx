@@ -14,7 +14,8 @@ const PROPERTIES = [
 type Stage = "rosewood" | "sandy" | "interior";
 
 const MUTE_STORAGE_KEY = "sandy:intro-muted";
-const SANDY_INTRO_SCRIPT = "I am Sandy. The institutional memory of Rosewood.";
+const SANDY_INTRO_SCRIPT =
+  "I am Sandy. The institutional memory of Rosewood. I remember every guest, every preference, every name — so your team doesn't have to.";
 
 export default function Home() {
   const [stage, setStage] = useState<Stage>("rosewood");
@@ -86,7 +87,7 @@ export default function Home() {
         const res = await fetch("/api/synth", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: SANDY_INTRO_SCRIPT }),
+          body: JSON.stringify({ text: SANDY_INTRO_SCRIPT, voiceStyle: "expressive" }),
         });
         if (cancelled) return;
 
