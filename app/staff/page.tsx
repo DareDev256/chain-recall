@@ -615,6 +615,60 @@ export default function StaffPage() {
             </section>
           )}
 
+          {brief.recurringPatterns && brief.recurringPatterns.length > 0 && (
+            <section className="mt-12">
+              <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)]">
+                Patterns observed across stays
+              </p>
+              <ul className="mt-4 space-y-3 max-w-3xl">
+                {brief.recurringPatterns.map((p, i) => (
+                  <li key={i} className="pl-6 relative flex flex-wrap items-baseline gap-x-3">
+                    <span className="absolute left-0 top-2 w-3 h-px bg-[var(--color-ink)]" />
+                    <p className="font-serif text-base leading-snug">{p.pattern}</p>
+                    <span className="font-sans text-[10px] uppercase tracking-[0.25em] text-[var(--color-accent)]">
+                      {p.frequency}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {brief.serviceRecovery && brief.serviceRecovery.length > 0 && (
+            <section className="mt-12">
+              <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)]">
+                Past resolutions
+              </p>
+              <ul className="mt-4 space-y-5 max-w-3xl">
+                {brief.serviceRecovery.map((r, i) => (
+                  <li key={i} className="pl-6 relative border-l border-[var(--color-rule)]">
+                    <div className="flex items-baseline gap-3 mb-1">
+                      <p className="font-sans text-[11px] uppercase tracking-[0.25em] text-[var(--color-ink-faint)]">
+                        {r.date} · {r.property}
+                      </p>
+                      {r.preventedRecurrence && (
+                        <span className="font-sans text-[10px] uppercase tracking-[0.25em] text-emerald-700">
+                          · prevented
+                        </span>
+                      )}
+                    </div>
+                    <p className="font-serif text-base leading-snug text-[var(--color-ink)] mb-1">
+                      {r.issue}
+                    </p>
+                    <p className="font-sans text-sm text-[var(--color-ink-soft)] leading-snug italic">
+                      Resolution: {r.resolution}
+                    </p>
+                    {r.loggedBy && (
+                      <p className="font-sans text-[10px] text-[var(--color-ink-faint)] mt-1 italic">
+                        {r.loggedBy}
+                      </p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
           {brief.discretionFlags && brief.discretionFlags.length > 0 && (
             <section className="mt-12 border border-[var(--color-rule)] bg-[var(--color-cream-tint)] p-6 max-w-3xl">
               <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)] mb-3">

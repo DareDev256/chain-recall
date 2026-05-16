@@ -74,6 +74,22 @@ export const CACHED_BRIEFS: Record<string, Brief> = {
       "Rosewood Hong Kong · Nov 2025",
       "Rosewood London · Jan 2026",
     ],
+    recurringPatterns: [
+      { pattern: "Chamomile after dinner (off-menu, kitchen prepares)", frequency: "3 of 3 stays · all 3 properties", category: "preference" },
+      { pattern: "19°C room temperature", frequency: "2 of 2 multi-night stays", category: "preference" },
+      { pattern: "Lavender-free turndown", frequency: "3 of 3 stays — confirmed allergy", category: "operational" },
+      { pattern: "Borrows a library book on multi-night stays", frequency: "1 of 1 multi-night to date (emerging)", category: "behavioral" },
+    ],
+    serviceRecovery: [
+      {
+        date: "2025-08-12",
+        property: "Rosewood Hong Kong",
+        issue: "Lavender sachet placed in turndown despite allergy flag (rotating housekeeping crew unfamiliar with profile). Headache reported at checkout.",
+        resolution: "GM apology + complimentary Asaya chamomile in-room service for the remaining stay. Lavender allergy promoted to system-wide flag (all properties). Housekeeping pre-arrival briefing protocol updated chain-wide.",
+        preventedRecurrence: true,
+        loggedBy: "GM · Hong Kong, Henry Cheng, 12 Aug 2025 (post-checkout follow-up call)",
+      },
+    ],
     memberSnapshot: {
       memberSince: "2024",
       totalStays: 3,
@@ -152,6 +168,23 @@ export const CACHED_BRIEFS: Record<string, Brief> = {
       "Rosewood Hong Kong · Feb 2026 (Manor Club tier)",
       "Rosewood Hong Kong · Aug 2025",
     ],
+    recurringPatterns: [
+      { pattern: "Negroni stirred, not shaken", frequency: "4 of 4 stays — corrected twice, now system-wide flag", category: "preference" },
+      { pattern: "Back booth or private corner for solo dining", frequency: "4 of 4 stays", category: "preference" },
+      { pattern: "Cash tips in unmarked envelopes for night staff", frequency: "3 of 4 stays — solo trips only", category: "behavioral" },
+      { pattern: "No-dairy kitchen-wide flag", frequency: "4 of 4 stays", category: "operational" },
+      { pattern: "No public greeting at entry — discretion preference", frequency: "4 of 4 stays — chain-wide flag", category: "operational" },
+    ],
+    serviceRecovery: [
+      {
+        date: "2025-12-19",
+        property: "Rosewood London",
+        issue: "Negroni served shaken not stirred at Scarfes Bar — despite prior corrections at Rosewood NYC. Guest corrected politely mid-pour.",
+        resolution: "Bar manager apology + remade drink. Negroni-stirred preference promoted from personal note to system-wide default across all Rosewood bar profiles for this member.",
+        preventedRecurrence: true,
+        loggedBy: "Bar Manager · Scarfes Bar London, Vincent Mwangi, 19 Dec 2025 21:48",
+      },
+    ],
     memberSnapshot: {
       memberSince: "2021",
       totalStays: 4,
@@ -221,6 +254,13 @@ export const CACHED_BRIEFS: Record<string, Brief> = {
     sourceVisits: [
       "Rosewood Hong Kong · Feb 2026 (investor dinner)",
       "Rosewood Hong Kong · Oct 2025 (first visit, working lunch)",
+    ],
+    recurringPatterns: [
+      { pattern: "Vegetarian set menu — cheese yes, no fish", frequency: "2 of 2 stays — kitchen-wide flag", category: "preference" },
+      { pattern: "Still water with ginger, no ice", frequency: "2 of 2 stays — kitchen default", category: "preference" },
+      { pattern: "Overhead fluorescents off, lamps preferred (migraine trigger)", frequency: "2 of 2 stays — chain-wide flag", category: "operational" },
+      { pattern: "Laptop-open working dinners, investor company", frequency: "2 of 2 stays", category: "behavioral" },
+      { pattern: "Devika Rao (assistant) copied on all confirmations", frequency: "2 of 2 bookings", category: "operational" },
     ],
     memberSnapshot: {
       memberSince: "2025",
@@ -320,6 +360,23 @@ export const CACHED_BRIEFS: Record<string, Brief> = {
       "Rosewood London · Apr 2026 (solo working stay)",
       "Rosewood London · Dec 2025 (Grand Manor House Wing, family)",
       "Rosewood Hong Kong · Nov 2025 (Silky Glow facial)",
+    ],
+    recurringPatterns: [
+      { pattern: "French press + Israeli black blend bedside before 6:30am", frequency: "2 of 2 morning stays — no service intrusion", category: "preference" },
+      { pattern: "Vegetarian, eats fish, no meat, lactose-light", frequency: "3 of 3 stays — kitchen-wide flag", category: "preference" },
+      { pattern: "Manhattan up, twist (no orange)", frequency: "1 of 1 bar visits — flagged forward to Madera", category: "preference" },
+      { pattern: "Blackout shades drawn 60 min before turndown", frequency: "2 of 2 evening stays", category: "operational" },
+      { pattern: "Room facing west or interior (no morning sun)", frequency: "2 of 2 stays — sleep disruptor flag", category: "operational" },
+    ],
+    serviceRecovery: [
+      {
+        date: "2026-04-22",
+        property: "Rosewood London",
+        issue: "Morning French press setup delivered with carafe + water but unground beans alongside. Guest had to grind beans himself.",
+        resolution: "Housekeeping retrained on Edson's setup specifically — beans must arrive pre-ground in the carafe with hot water on demand within 2 minutes. Complimentary breakfast credit added. Profile note now explicit: 'grounds in carafe ready'.",
+        preventedRecurrence: true,
+        loggedBy: "Housekeeping Manager · London, Sofia Vargas, 22 Apr 2026 06:18",
+      },
     ],
     memberSnapshot: {
       memberSince: "2022",

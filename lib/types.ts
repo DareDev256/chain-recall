@@ -87,6 +87,21 @@ export type MemberSnapshot = {
   loyaltyTier?: string;
 };
 
+export type RecurringPattern = {
+  pattern: string;
+  frequency: string;
+  category?: "preference" | "behavioral" | "operational";
+};
+
+export type ServiceRecoveryEntry = {
+  date: string;
+  property: string;
+  issue: string;
+  resolution: string;
+  preventedRecurrence?: boolean;
+  loggedBy?: string;
+};
+
 export type Brief = {
   guestName: string;
   visitContext: string;
@@ -99,6 +114,8 @@ export type Brief = {
   amenityReplenishment: AmenityReplenishment[];
   suggestedQuestions: SuggestedQuestion[];
   localSuggestions?: LocalSuggestion[];
+  recurringPatterns?: RecurringPattern[];
+  serviceRecovery?: ServiceRecoveryEntry[];
   discretionFlags?: string[];
   emotionalNotes: string;
   sourceVisits: string[];
