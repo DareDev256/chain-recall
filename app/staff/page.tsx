@@ -74,6 +74,24 @@ export default function StaffPage() {
             {brief.visitContext}
           </p>
 
+          {brief.accessibilityNeeds && brief.accessibilityNeeds.length > 0 && (
+            <section className="mt-10 border-l-2 border-[var(--color-accent)] pl-6 max-w-2xl bg-[var(--color-accent)]/5 py-4 -ml-6 pl-12">
+              <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-accent)] mb-2 font-semibold">
+                Non-negotiable
+              </p>
+              <ul className="space-y-2">
+                {brief.accessibilityNeeds.map((need, i) => (
+                  <li
+                    key={i}
+                    className="font-serif text-lg leading-snug text-[var(--color-ink)]"
+                  >
+                    {need}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
           <section className="mt-12">
             <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)]">
               Prep
@@ -90,6 +108,46 @@ export default function StaffPage() {
               ))}
             </ul>
           </section>
+
+          {brief.amenityReplenishment && brief.amenityReplenishment.length > 0 && (
+            <section className="mt-12">
+              <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)]">
+                In the room before arrival
+              </p>
+              <ul className="mt-4 space-y-4 max-w-3xl">
+                {brief.amenityReplenishment.map((a, i) => (
+                  <li key={i} className="pl-6 relative">
+                    <span className="absolute left-0 top-3 w-3 h-px bg-[var(--color-ink)]" />
+                    <p className="font-serif text-lg leading-snug">{a.item}</p>
+                    <p className="font-sans text-[11px] text-[var(--color-ink-faint)] mt-1 italic">
+                      {a.sourcedFrom}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {brief.suggestedQuestions && brief.suggestedQuestions.length > 0 && (
+            <section className="mt-12">
+              <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)]">
+                Ask the guest
+              </p>
+              <ul className="mt-4 space-y-5 max-w-3xl">
+                {brief.suggestedQuestions.map((q, i) => (
+                  <li key={i} className="pl-6 relative">
+                    <span className="absolute left-0 top-3 w-3 h-px bg-[var(--color-accent)]" />
+                    <p className="font-serif text-lg italic leading-snug">
+                      &ldquo;{q.question}&rdquo;
+                    </p>
+                    <p className="font-sans text-[11px] text-[var(--color-ink-faint)] mt-1">
+                      {q.basedOn}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           {brief.emotionalNotes && (
             <section className="mt-12 border-l-2 border-[var(--color-accent)] pl-6 max-w-2xl">

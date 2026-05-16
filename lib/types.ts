@@ -8,10 +8,16 @@ export type Property = {
   signature: string;
 };
 
+export type AmenityObservation = {
+  item: string;
+  observation: string;
+};
+
 export type Visit = {
   propertyId: PropertyId;
   date: string;
   notes: string[];
+  amenitiesUsed?: AmenityObservation[];
 };
 
 export type GuestProfile = {
@@ -23,6 +29,7 @@ export type GuestProfile = {
   preferences: {
     dietary: string[];
     allergies: string[];
+    accessibility?: string[];
     roomTemp?: number;
     drink?: string;
     seating?: string;
@@ -35,10 +42,23 @@ export type GuestProfile = {
   }[];
 };
 
+export type AmenityReplenishment = {
+  item: string;
+  sourcedFrom: string;
+};
+
+export type SuggestedQuestion = {
+  question: string;
+  basedOn: string;
+};
+
 export type Brief = {
   guestName: string;
   visitContext: string;
+  accessibilityNeeds: string[];
   prepActions: string[];
+  amenityReplenishment: AmenityReplenishment[];
+  suggestedQuestions: SuggestedQuestion[];
   emotionalNotes: string;
   sourceVisits: string[];
 };
