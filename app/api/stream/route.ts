@@ -14,8 +14,8 @@ export async function GET() {
 
       send({ type: "ready" });
 
-      const unsubscribe = subscribe((brief) => {
-        send({ type: "brief", brief });
+      const unsubscribe = subscribe((event) => {
+        send(event);
       });
 
       const heartbeat = setInterval(() => {

@@ -1,12 +1,55 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Brief } from "@/lib/types";
 
 export default function StaffPage() {
   const [brief, setBrief] = useState<Brief | null>(null);
+  const [computing, setComputing] = useState(false);
   const [connected, setConnected] = useState(false);
   const [pulse, setPulse] = useState(false);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  useEffect(() => {
+    const primeAudio = () => {
+      if (!audioCtxRef.current) {
+        try {
+          audioCtxRef.current = new (window.AudioContext ||
+            (window as unknown as { webkitAudioContext: typeof AudioContext })
+              .webkitAudioContext)();
+        } catch {
+          // audio unsupported — fail silently
+        }
+      }
+    };
+    document.addEventListener("click", primeAudio, { once: true });
+    document.addEventListener("keydown", primeAudio, { once: true });
+    return () => {
+      document.removeEventListener("click", primeAudio);
+      document.removeEventListener("keydown", primeAudio);
+    };
+  }, []);
+
+  const playChime = () => {
+    const ctx = audioCtxRef.current;
+    if (!ctx) return;
+    try {
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = 880; // A5 — soft, attentive
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.08, now + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.75);
+    } catch {
+      // chime fail — silent
+    }
+  };
 
   useEffect(() => {
     const es = new EventSource("/api/stream");
@@ -14,10 +57,15 @@ export default function StaffPage() {
     es.onerror = () => setConnected(false);
     es.onmessage = (e) => {
       const data = JSON.parse(e.data);
-      if (data.type === "brief") {
+      if (data.type === "computing") {
+        setComputing(true);
+        setBrief(null);
+      } else if (data.type === "brief") {
+        setComputing(false);
         setPulse(true);
         setTimeout(() => setPulse(false), 1200);
         setBrief(data.brief);
+        playChime();
       }
     };
     return () => es.close();
@@ -33,9 +81,12 @@ export default function StaffPage() {
           <h1 className="font-serif text-3xl mt-1">Menlo Park · Sand Hill Road</h1>
         </div>
         <div className="flex items-center gap-4 font-sans text-xs text-[var(--color-ink-faint)]">
-          {brief && (
+          {(brief || computing) && (
             <button
-              onClick={() => setBrief(null)}
+              onClick={() => {
+                setBrief(null);
+                setComputing(false);
+              }}
               className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)] hover:text-[var(--color-ink)] transition-colors"
             >
               Reset
@@ -52,7 +103,7 @@ export default function StaffPage() {
         </div>
       </header>
 
-      {!brief ? (
+      {!brief && !computing && (
         <div className="flex-1 flex flex-col items-center justify-center py-32">
           <p className="font-serif text-2xl text-[var(--color-ink-faint)] italic">
             All quiet.
@@ -61,7 +112,23 @@ export default function StaffPage() {
             No members arriving.
           </p>
         </div>
-      ) : (
+      )}
+
+      {computing && (
+        <div className="flex-1 flex flex-col items-center justify-center py-32">
+          <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-accent)] mb-4">
+            Member detected
+          </p>
+          <p className="font-serif text-2xl text-[var(--color-ink-soft)] italic animate-pulse">
+            Reading institutional memory…
+          </p>
+          <p className="font-sans text-xs text-[var(--color-ink-faint)] mt-3 uppercase tracking-[0.2em]">
+            Composing brief from cross-property history
+          </p>
+        </div>
+      )}
+
+      {brief && (
         <article className="mt-10">
           <div className="flex items-baseline gap-4">
             <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-accent)]">

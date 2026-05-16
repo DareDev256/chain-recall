@@ -10,8 +10,10 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "guestId and propertyId required" }, { status: 400 });
   }
 
+  publish({ type: "computing", guestId, propertyId });
+
   const brief = await compose(guestId, propertyId);
-  publish(brief);
+  publish({ type: "brief", brief });
 
   return Response.json({ ok: true, brief });
 }
