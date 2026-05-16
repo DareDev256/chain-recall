@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { getGuest, getProperty } from "./data";
+import { fetchGuestRecord, fetchPropertyRecord } from "./sources/opera";
 import { getCachedBrief } from "./cache";
 import type { Brief } from "./types";
 
@@ -49,7 +49,7 @@ export async function compose(
 }
 
 async function composeViaClaude(guestId: string, arrivingAt: string): Promise<Brief> {
-  const property = getProperty(arrivingAt);
+  const property = await fetchPropertyRecord(arrivingAt);
   if (!property) throw new Error(`unknown property ${arrivingAt}`);
 
   const initialUserMessage = `Guest ${guestId} is arriving at ${property.name} (${property.city}, ${property.neighborhood}). Compose their prep brief.`;
@@ -83,7 +83,7 @@ async function composeViaClaude(guestId: string, arrivingAt: string): Promise<Br
     const toolUse = response.content.find((b) => b.type === "tool_use");
     if (!toolUse || toolUse.type !== "tool_use") break;
 
-    const guest = getGuest((toolUse.input as { guest_id: string }).guest_id);
+    const guest = await fetchGuestRecord((toolUse.input as { guest_id: string }).guest_id);
     const toolResult = guest
       ? JSON.stringify(guest)
       : JSON.stringify({ error: "guest not found" });
