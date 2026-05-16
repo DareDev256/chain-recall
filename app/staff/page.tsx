@@ -5,6 +5,7 @@ import type { Brief, PropertyId } from "@/lib/types";
 import { LiveEta } from "./LiveEta";
 import { ArrivalMap } from "./ArrivalMap";
 import { SpeakerOnIcon, SpeakerOffIcon } from "../icons";
+import { getGreeting } from "@/lib/greetings";
 
 const BRIEF_STORAGE_KEY = "sandy:lastBrief";
 
@@ -78,6 +79,7 @@ export default function StaffPage() {
   const [connected, setConnected] = useState(false);
   const [pulse, setPulse] = useState(false);
   const [whispering, setWhispering] = useState(false);
+  const [greeting, setGreeting] = useState(false);
   const [listening, setListening] = useState(false);
   const [recentNote, setRecentNote] = useState<CapturedNote | null>(null);
   const [allNotes, setAllNotes] = useState<CapturedNote[]>([]);
@@ -207,6 +209,51 @@ export default function StaffPage() {
       console.warn("[whisper] failed:", err);
     } finally {
       setTimeout(() => setWhispering(false), 1500);
+    }
+  };
+
+  const greetGuest = async () => {
+    if (!context || greeting) return;
+    const line = getGreeting(context.guestId);
+    if (!line) return;
+    setGreeting(true);
+    setSubtitle(
+      `${line.text}\n\n${line.englishTranslation}`,
+    );
+    try {
+      const res = await fetch("/api/synth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: line.text }),
+      });
+      const contentType = res.headers.get("Content-Type") || "";
+      if (contentType.startsWith("audio/")) {
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        if (!muted) {
+          const audio = new Audio(url);
+          audio.onended = () => URL.revokeObjectURL(url);
+          await audio.play().catch(() => URL.revokeObjectURL(url));
+        } else {
+          URL.revokeObjectURL(url);
+        }
+      } else {
+        const data = await res.json();
+        if (!muted && data.script && typeof window.speechSynthesis !== "undefined") {
+          const utter = new SpeechSynthesisUtterance(data.script);
+          utter.lang = line.locale;
+          utter.rate = 0.92;
+          utter.volume = 0.85;
+          window.speechSynthesis.speak(utter);
+        }
+      }
+      // auto-dismiss after 20s
+      const stash = line.text;
+      setTimeout(() => setSubtitle((curr) => (curr?.startsWith(stash) ? null : curr)), 20000);
+    } catch (err) {
+      console.warn("[greet] failed:", err);
+    } finally {
+      setTimeout(() => setGreeting(false), 1500);
     }
   };
 
@@ -376,9 +423,20 @@ export default function StaffPage() {
             <span className="font-sans text-[9px] uppercase tracking-[0.3em] text-[var(--color-accent)] mt-1 whitespace-nowrap">
               {muted ? "Sandy · subtitled" : "Sandy · speaking"}
             </span>
-            <p className="font-serif text-base italic leading-snug">
-              &ldquo;{subtitle}&rdquo;
-            </p>
+            <div className="flex-1">
+              {subtitle.split("\n\n").map((line, i) => (
+                <p
+                  key={i}
+                  className={
+                    i === 0
+                      ? "font-serif text-base italic leading-snug"
+                      : "font-sans text-[11px] leading-snug text-[var(--color-cream)]/65 mt-2 italic"
+                  }
+                >
+                  {i === 0 ? <>&ldquo;{line}&rdquo;</> : <>&mdash; {line}</>}
+                </p>
+              ))}
+            </div>
             <button
               onClick={() => setSubtitle(null)}
               className="font-sans text-[10px] uppercase tracking-[0.2em] text-[var(--color-cream)]/60 hover:text-[var(--color-cream)] transition-colors ml-2"
@@ -425,6 +483,16 @@ export default function StaffPage() {
           >
             {listening ? "Listening…" : "Voice Note"}
           </button>
+          {brief && context && getGreeting(context.guestId) && (
+            <button
+              onClick={greetGuest}
+              disabled={greeting}
+              className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-accent)] hover:text-[var(--color-ink)] transition-colors disabled:opacity-50"
+              title={`Speak welcome in ${getGreeting(context.guestId)?.language ?? "guest's language"}`}
+            >
+              {greeting ? "Greeting…" : `Greet in ${getGreeting(context.guestId)?.language}`}
+            </button>
+          )}
           {brief && (
             <button
               onClick={whisper}
