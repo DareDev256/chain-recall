@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" fill="none">
+  <text
+    x="100"
+    y="30"
+    font-family="'Cormorant Garamond', Georgia, serif"
+    font-style="italic"
+    font-size="28"
+    font-weight="500"
+    fill="#1a1a1a"
+    text-anchor="middle"
+  >Sandy</text>
+  <line
+    x1="65"
+    y1="40"
+    x2="135"
+    y2="40"
+    stroke="#1a1a1a"
+    stroke-width="1"
+    stroke-linecap="square"
+  />
+  <text
+    x="100"
+    y="53"
+    font-family="Inter, system-ui, sans-serif"
+    font-size="7"
+    font-weight="500"
+    letter-spacing="2"
+    fill="#1a1a1a"
+    text-anchor="middle"
+  >CHAIN-RECALL</text>
+</svg>

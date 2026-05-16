@@ -24,3 +24,32 @@ html, body {
 .font-sans {
   font-family: var(--font-sans), -apple-system, sans-serif;
 }
+
+@keyframes sandy-emerge {
+  0% {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes sandy-rule {
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0.85;
+  }
+}
+
+@keyframes sandy-breath {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
