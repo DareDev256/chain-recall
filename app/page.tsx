@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { BRAND, PROPERTY_PLATES } from "./brand-tokens";
+import { SpeakerOnIcon, SpeakerOffIcon, ArrowUpRightIcon } from "./icons";
 
 const PROPERTIES = [
   { name: "Rosewood Hong Kong", plate: PROPERTY_PLATES["hong-kong"] },
@@ -20,6 +21,8 @@ export default function Home() {
   const [introMuted, setIntroMuted] = useState(false);
   const [audioReady, setAudioReady] = useState(false);
   const narrationFiredRef = useRef(false);
+  const narrationAudioRef = useRef<HTMLAudioElement | null>(null);
+  const narrationUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
     try {
@@ -40,6 +43,34 @@ export default function Home() {
     };
   }, []);
 
+  // Stop any in-flight narration cleanly
+  const stopNarration = () => {
+    if (narrationAudioRef.current) {
+      try {
+        narrationAudioRef.current.pause();
+        narrationAudioRef.current.src = "";
+      } catch {
+        // ignore
+      }
+      narrationAudioRef.current = null;
+    }
+    if (narrationUrlRef.current) {
+      try {
+        URL.revokeObjectURL(narrationUrlRef.current);
+      } catch {
+        // ignore
+      }
+      narrationUrlRef.current = null;
+    }
+    if (typeof window !== "undefined" && typeof window.speechSynthesis !== "undefined") {
+      try {
+        window.speechSynthesis.cancel();
+      } catch {
+        // ignore
+      }
+    }
+  };
+
   // Fire Sandy narration once when entering the sandy stage (if audio primed + not muted)
   useEffect(() => {
     if (stage !== "sandy") return;
@@ -48,6 +79,8 @@ export default function Home() {
     if (!audioReady) return;
 
     narrationFiredRef.current = true;
+    let cancelled = false;
+
     (async () => {
       try {
         const res = await fetch("/api/synth", {
@@ -55,16 +88,29 @@ export default function Home() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ text: SANDY_INTRO_SCRIPT }),
         });
+        if (cancelled) return;
+
         const contentType = res.headers.get("Content-Type") || "";
         if (contentType.startsWith("audio/")) {
           const blob = await res.blob();
+          if (cancelled) return;
           const url = URL.createObjectURL(blob);
+          narrationUrlRef.current = url;
           const audio = new Audio(url);
-          audio.onended = () => URL.revokeObjectURL(url);
+          narrationAudioRef.current = audio;
+          audio.onended = () => {
+            if (narrationUrlRef.current === url) {
+              URL.revokeObjectURL(url);
+              narrationUrlRef.current = null;
+            }
+          };
           audio.volume = 0.85;
-          await audio.play();
+          await audio.play().catch(() => {
+            // autoplay blocked — quiet fail, user can use the toggle
+          });
         } else {
           const data = await res.json();
+          if (cancelled) return;
           if (data.script && typeof window.speechSynthesis !== "undefined") {
             const utter = new SpeechSynthesisUtterance(data.script);
             utter.rate = 0.92;
@@ -77,7 +123,22 @@ export default function Home() {
         // fail silently
       }
     })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [stage, introMuted, audioReady]);
+
+  // Stop narration cleanly on unmount or when muted
+  useEffect(() => {
+    if (introMuted) stopNarration();
+  }, [introMuted]);
+
+  useEffect(() => {
+    return () => {
+      stopNarration();
+    };
+  }, []);
 
   const toggleMute = () => {
     setIntroMuted((m) => {
@@ -87,9 +148,7 @@ export default function Home() {
       } catch {
         // ignore
       }
-      if (next && typeof window.speechSynthesis !== "undefined") {
-        window.speechSynthesis.cancel();
-      }
+      if (next) stopNarration();
       return next;
     });
   };
@@ -108,10 +167,11 @@ export default function Home() {
       {/* Global mute toggle — top-right, always available */}
       <button
         onClick={toggleMute}
-        className="absolute top-6 right-6 z-50 font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)] hover:text-[var(--color-ink)] transition-colors"
+        className="absolute top-6 right-6 z-50 font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)] hover:text-[var(--color-ink)] transition-colors flex items-center gap-2"
         title={introMuted ? "Sandy narration muted (remembered)" : "Sandy narration on — click to mute"}
       >
-        {introMuted ? "🔇 Sandy muted" : "🔊 Sandy speaks"}
+        {introMuted ? <SpeakerOffIcon /> : <SpeakerOnIcon />}
+        <span>{introMuted ? "Sandy muted" : "Sandy speaks"}</span>
       </button>
 
       {/* Phase 0 — Rosewood mark fades in, holds, fades to Sandy */}
@@ -166,10 +226,11 @@ export default function Home() {
         </p>
         <button
           onClick={() => setStage("interior")}
-          className="mt-16 font-sans text-xs uppercase tracking-[0.3em] text-[var(--color-ink-soft)] hover:text-[var(--color-ink)] border-b border-[var(--color-rule)] hover:border-[var(--color-accent)] pb-1 transition-colors"
+          className="mt-16 font-sans text-xs uppercase tracking-[0.3em] text-[var(--color-ink-soft)] hover:text-[var(--color-ink)] border-b border-[var(--color-rule)] hover:border-[var(--color-accent)] pb-1 transition-colors flex items-center gap-2"
           style={{ animation: stage === "sandy" ? "sandy-emerge 700ms ease-out 3200ms both" : "none" }}
         >
-          Step inside ↗
+          <span>Step inside</span>
+          <ArrowUpRightIcon />
         </button>
         <p
           className="absolute bottom-12 font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)]"

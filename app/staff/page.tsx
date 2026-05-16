@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Brief, PropertyId } from "@/lib/types";
 import { LiveEta } from "./LiveEta";
 import { ArrivalMap } from "./ArrivalMap";
+import { SpeakerOnIcon, SpeakerOffIcon } from "../icons";
 
 const BRIEF_STORAGE_KEY = "sandy:lastBrief";
 
@@ -435,14 +436,15 @@ export default function StaffPage() {
           )}
           <button
             onClick={() => setMuted((m) => !m)}
-            className={`font-sans text-[10px] uppercase tracking-[0.3em] transition-colors ${
+            className={`font-sans text-[10px] uppercase tracking-[0.3em] transition-colors flex items-center gap-1.5 ${
               muted
                 ? "text-[var(--color-accent)] hover:text-[var(--color-ink)]"
                 : "text-[var(--color-ink-faint)] hover:text-[var(--color-ink)]"
             }`}
             title={muted ? "Audio muted — subtitles only" : "Audio on — click to mute and use subtitles"}
           >
-            {muted ? "🔇 Muted" : "🔊 Sound"}
+            {muted ? <SpeakerOffIcon /> : <SpeakerOnIcon />}
+            <span>{muted ? "Muted" : "Sound"}</span>
           </button>
           {(brief || computing) && (
             <button
