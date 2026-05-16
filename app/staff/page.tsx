@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { Brief } from "@/lib/types";
+import { LiveEta } from "./LiveEta";
 
 type Context = { guestId: string; propertyId: string };
 
@@ -337,7 +338,8 @@ export default function StaffPage() {
               <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-accent)] mb-3">
                 Arrival intel
               </p>
-              <p className="font-serif text-xl leading-snug mb-3">
+              <LiveEta resetKey={context?.guestId} />
+              <p className="font-sans text-[11px] uppercase tracking-[0.2em] text-[var(--color-ink-faint)] mb-3">
                 {brief.arrivalIntel.expectedAt}
               </p>
               <ul className="space-y-1.5 font-sans text-sm text-[var(--color-ink-soft)] leading-relaxed">
