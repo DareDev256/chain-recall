@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import type { Brief } from "@/lib/types";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import type { Brief, PropertyId } from "@/lib/types";
 import { LiveEta } from "./LiveEta";
 
 type Context = { guestId: string; propertyId: string };
@@ -30,7 +31,34 @@ type SpeechRecognitionEvent = Event & {
 
 type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
 
+const PROPERTY_LABEL: Record<PropertyId, { eyebrow: string; heading: string; short: string }> = {
+  "sand-hill": {
+    eyebrow: "Rosewood Sand Hill · Front of House",
+    heading: "Menlo Park · Sand Hill Road",
+    short: "Sand Hill",
+  },
+  "hong-kong": {
+    eyebrow: "Rosewood Hong Kong · Front of House",
+    heading: "Tsim Sha Tsui · Victoria Harbour",
+    short: "Hong Kong",
+  },
+  london: {
+    eyebrow: "Rosewood London · Front of House",
+    heading: "High Holborn · Theatre District",
+    short: "London",
+  },
+};
+
+const PROPERTY_ORDER: PropertyId[] = ["sand-hill", "hong-kong", "london"];
+
 export default function StaffPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const currentProperty: PropertyId = useMemo(() => {
+    const p = searchParams.get("property") as PropertyId | null;
+    return p && PROPERTY_LABEL[p] ? p : "sand-hill";
+  }, [searchParams]);
+
   const [brief, setBrief] = useState<Brief | null>(null);
   const [context, setContext] = useState<Context | null>(null);
   const [computing, setComputing] = useState(false);
@@ -42,6 +70,13 @@ export default function StaffPage() {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const interimRef = useRef<string>("");
+
+  // clear state when the property changes — we are now a different tablet
+  useEffect(() => {
+    setBrief(null);
+    setComputing(false);
+    setContext(null);
+  }, [currentProperty]);
 
   useEffect(() => {
     const primeAudio = () => {
@@ -161,15 +196,12 @@ export default function StaffPage() {
     interimRef.current = "";
 
     recognition.onresult = (event) => {
-      let interim = "";
       let final = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const r = event.results[i];
         if (r.isFinal) final += r[0].transcript;
-        else interim += r[0].transcript;
       }
       if (final) interimRef.current += final;
-      // we can show interim later if needed; for now just store final
     };
 
     recognition.onerror = () => {
@@ -202,10 +234,12 @@ export default function StaffPage() {
     es.onmessage = (e) => {
       const data = JSON.parse(e.data);
       if (data.type === "computing") {
+        if (data.propertyId !== currentProperty) return;
         setComputing(true);
         setBrief(null);
         setContext({ guestId: data.guestId, propertyId: data.propertyId });
       } else if (data.type === "brief") {
+        if (data.propertyId !== currentProperty) return;
         setComputing(false);
         setPulse(true);
         setTimeout(() => setPulse(false), 1200);
@@ -224,16 +258,33 @@ export default function StaffPage() {
       }
     };
     return () => es.close();
-  }, []);
+  }, [currentProperty]);
+
+  const labels = PROPERTY_LABEL[currentProperty];
 
   return (
     <main className="flex-1 flex flex-col px-12 py-10 max-w-5xl mx-auto w-full">
       <header className="flex items-baseline justify-between border-b border-[var(--color-rule)] pb-6">
         <div>
           <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)]">
-            Rosewood Sand Hill · Front of House
+            {labels.eyebrow}
           </p>
-          <h1 className="font-serif text-3xl mt-1">Menlo Park · Sand Hill Road</h1>
+          <h1 className="font-serif text-3xl mt-1">{labels.heading}</h1>
+          <div className="mt-3 flex gap-5">
+            {PROPERTY_ORDER.map((id) => (
+              <button
+                key={id}
+                onClick={() => router.replace(`/staff?property=${id}`)}
+                className={`font-sans text-[10px] uppercase tracking-[0.3em] transition-colors ${
+                  currentProperty === id
+                    ? "text-[var(--color-ink)] underline underline-offset-[6px] decoration-[var(--color-accent)]"
+                    : "text-[var(--color-ink-faint)] hover:text-[var(--color-ink)]"
+                }`}
+              >
+                {PROPERTY_LABEL[id].short}
+              </button>
+            ))}
+          </div>
         </div>
         <div className="flex items-center gap-4 font-sans text-xs text-[var(--color-ink-faint)]">
           <button
@@ -295,7 +346,7 @@ export default function StaffPage() {
             All quiet.
           </p>
           <p className="font-sans text-xs text-[var(--color-ink-faint)] mt-3 uppercase tracking-[0.2em]">
-            No members arriving.
+            No members arriving at {labels.short}.
           </p>
         </div>
       )}
