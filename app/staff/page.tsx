@@ -196,6 +196,38 @@ export default function StaffPage() {
           propertyId: context?.propertyId,
         }),
       });
+
+      // Sandy speaks back — short acknowledgment over the same earpiece layer
+      const shortTranscript =
+        transcript.length > 80 ? transcript.slice(0, 77).trimEnd() + "…" : transcript;
+      const guestPart = brief?.guestName
+        ? ` to ${brief.guestName.split(" ").slice(-1)[0]}'s passbook`
+        : " to the passbook";
+      const ack = `Noted. "${shortTranscript}." Added${guestPart}.`;
+
+      try {
+        const ackRes = await fetch("/api/synth", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: ack }),
+        });
+        const ackType = ackRes.headers.get("Content-Type") || "";
+        if (ackType.startsWith("audio/")) {
+          const blob = await ackRes.blob();
+          const url = URL.createObjectURL(blob);
+          const audio = new Audio(url);
+          audio.onended = () => URL.revokeObjectURL(url);
+          await audio.play();
+        } else if (typeof window.speechSynthesis !== "undefined") {
+          const utter = new SpeechSynthesisUtterance(ack);
+          utter.rate = 0.95;
+          utter.pitch = 0.9;
+          utter.volume = 0.75;
+          window.speechSynthesis.speak(utter);
+        }
+      } catch (ackErr) {
+        console.warn("[voice-note ack] failed:", ackErr);
+      }
     } catch (err) {
       console.warn("[memory-note] failed:", err);
     }
@@ -312,6 +344,9 @@ export default function StaffPage() {
             {labels.eyebrow}
           </p>
           <h1 className="font-serif text-3xl mt-1">{labels.heading}</h1>
+          <p className="font-sans text-[9px] uppercase tracking-[0.25em] text-[var(--color-ink-faint)] mt-1 italic">
+            Demo · 3 of 38 Rosewood properties · 23 countries · 21+ in pipeline
+          </p>
           <div className="mt-3 flex gap-5">
             {PROPERTY_ORDER.map((id) => (
               <button
@@ -379,7 +414,7 @@ export default function StaffPage() {
       {recentNote && (
         <div className="mt-4 border border-[var(--color-rule)] bg-[var(--color-cream-tint)] px-5 py-3 max-w-3xl">
           <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-accent)] mb-1">
-            Noted by staff
+            Added to passbook
           </p>
           <p className="font-serif text-base italic leading-snug">
             &ldquo;{recentNote.transcript}&rdquo;
@@ -407,7 +442,7 @@ export default function StaffPage() {
             Reading institutional memory…
           </p>
           <p className="font-sans text-xs text-[var(--color-ink-faint)] mt-3 uppercase tracking-[0.2em]">
-            Composing brief from cross-property history
+            Composing passbook from cross-property history
           </p>
         </div>
       )}
