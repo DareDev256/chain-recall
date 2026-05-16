@@ -10,63 +10,92 @@ const PROPERTIES = [
   { name: "Rosewood London", plate: PROPERTY_PLATES.london },
 ];
 
+type Stage = "rosewood" | "sandy" | "interior";
+
 export default function Home() {
-  const [entered, setEntered] = useState(false);
+  const [stage, setStage] = useState<Stage>("rosewood");
 
   useEffect(() => {
-    const t = setTimeout(() => setEntered(true), 6500);
-    return () => clearTimeout(t);
+    const toSandy = setTimeout(() => setStage("sandy"), 2200);
+    const toInterior = setTimeout(() => setStage("interior"), 8800);
+    return () => {
+      clearTimeout(toSandy);
+      clearTimeout(toInterior);
+    };
   }, []);
 
   return (
     <main className="flex-1 relative">
+      {/* Phase 0 — Rosewood mark fades in, holds, fades to Sandy */}
       <section
-        aria-hidden={entered}
-        className={`absolute inset-0 flex flex-col items-center justify-center px-8 text-center transition-all duration-1200 ease-out ${
-          entered ? "opacity-0 blur-md scale-105 pointer-events-none" : "opacity-100"
+        aria-hidden={stage !== "rosewood"}
+        className={`absolute inset-0 flex flex-col items-center justify-center px-8 text-center transition-all duration-[1100ms] ease-out ${
+          stage === "rosewood" ? "opacity-100" : "opacity-0 blur-md scale-105 pointer-events-none"
+        }`}
+      >
+        <img
+          src="/brand/rosewood-mark.jpg"
+          alt="Rosewood Hotels & Resorts"
+          className="w-44 h-44 md:w-56 md:h-56 object-contain"
+          style={{ animation: "sandy-emerge 900ms ease-out 100ms both" }}
+        />
+        <p
+          className="font-sans text-[10px] uppercase tracking-[0.4em] text-[var(--color-ink-faint)] mt-10"
+          style={{ animation: "sandy-emerge 700ms ease-out 1000ms both" }}
+        >
+          Rosewood Hotels &amp; Resorts
+        </p>
+      </section>
+
+      {/* Phase 1 — Sandy introduction */}
+      <section
+        aria-hidden={stage !== "sandy"}
+        className={`absolute inset-0 flex flex-col items-center justify-center px-8 text-center transition-all duration-[1100ms] ease-out ${
+          stage === "sandy" ? "opacity-100" : "opacity-0 blur-md scale-105 pointer-events-none"
         }`}
       >
         <p
           className="font-serif text-2xl md:text-3xl italic text-[var(--color-ink-soft)] tracking-wide"
-          style={{ animation: "sandy-emerge 700ms ease-out 250ms both" }}
+          style={{ animation: stage === "sandy" ? "sandy-emerge 700ms ease-out 250ms both" : "none" }}
         >
           I am
         </p>
         <h1
           className="font-serif text-7xl md:text-9xl font-normal leading-none tracking-tight mt-2"
-          style={{ animation: "sandy-emerge 900ms ease-out 800ms both" }}
+          style={{ animation: stage === "sandy" ? "sandy-emerge 900ms ease-out 800ms both" : "none" }}
         >
           Sandy.
         </h1>
         <div
           className="mt-10 h-px w-20 bg-[var(--color-accent)] origin-left"
-          style={{ animation: "sandy-rule 700ms ease-out 1700ms both" }}
+          style={{ animation: stage === "sandy" ? "sandy-rule 700ms ease-out 1700ms both" : "none" }}
         />
         <p
           className="font-serif text-2xl md:text-3xl text-[var(--color-ink-soft)] leading-snug mt-10 max-w-2xl"
-          style={{ animation: "sandy-emerge 900ms ease-out 2200ms both" }}
+          style={{ animation: stage === "sandy" ? "sandy-emerge 900ms ease-out 2200ms both" : "none" }}
         >
           The institutional memory of Rosewood.
         </p>
         <button
-          onClick={() => setEntered(true)}
+          onClick={() => setStage("interior")}
           className="mt-16 font-sans text-xs uppercase tracking-[0.3em] text-[var(--color-ink-soft)] hover:text-[var(--color-ink)] border-b border-[var(--color-rule)] hover:border-[var(--color-accent)] pb-1 transition-colors"
-          style={{ animation: "sandy-emerge 700ms ease-out 3200ms both" }}
+          style={{ animation: stage === "sandy" ? "sandy-emerge 700ms ease-out 3200ms both" : "none" }}
         >
           Step inside ↗
         </button>
         <p
           className="absolute bottom-12 font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)]"
-          style={{ animation: "sandy-emerge 700ms ease-out 4000ms both" }}
+          style={{ animation: stage === "sandy" ? "sandy-emerge 700ms ease-out 4000ms both" : "none" }}
         >
           Rosewood Sand Hill · on shift
         </p>
       </section>
 
+      {/* Phase 2 — Interior / triptych */}
       <section
-        aria-hidden={!entered}
-        className={`absolute inset-0 flex flex-col items-center justify-center px-8 py-12 text-center transition-all duration-1200 ease-out overflow-y-auto ${
-          entered ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-md scale-95 pointer-events-none"
+        aria-hidden={stage !== "interior"}
+        className={`absolute inset-0 flex flex-col items-center justify-center px-8 py-12 text-center transition-all duration-[1100ms] ease-out overflow-y-auto ${
+          stage === "interior" ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-md scale-95 pointer-events-none"
         }`}
       >
         <img

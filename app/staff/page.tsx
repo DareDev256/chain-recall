@@ -713,6 +713,13 @@ export default function StaffPage() {
               ))}
             </div>
           </section>
+
+          <section className="mt-8 flex flex-wrap gap-x-6 gap-y-1 font-sans text-[10px] uppercase tracking-[0.25em] text-[var(--color-ink-faint)] italic">
+            <span>Brief composed · Claude Opus 4.7 · ~$0.13</span>
+            <span>· Whisper · ElevenLabs Turbo · ~$0.105 / play</span>
+            <span>· Voice Note ack · ~$0.045</span>
+            <span>· See COSTS.md for full economics</span>
+          </section>
         </article>
       )}
     </main>
