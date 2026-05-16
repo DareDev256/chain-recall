@@ -85,10 +85,10 @@ export async function POST(req: NextRequest) {
     (typeof voiceStyle === "string" && VOICE_PRESETS[voiceStyle]) ||
     VOICE_PRESETS.neutral;
 
-  // Voice selection — supports "male" alternate when ELEVENLABS_VOICE_ID_MALE set
+  // Voice selection — supports "hill"/"male" alternate when ELEVENLABS_VOICE_ID_MALE set
   const primaryVoiceId = process.env.ELEVENLABS_VOICE_ID || DEFAULT_VOICE_ID;
-  const maleVoiceId = process.env.ELEVENLABS_VOICE_ID_MALE || primaryVoiceId;
-  const voiceId = voice === "male" ? maleVoiceId : primaryVoiceId;
+  const hillVoiceId = process.env.ELEVENLABS_VOICE_ID_MALE || primaryVoiceId;
+  const voiceId = voice === "hill" || voice === "male" ? hillVoiceId : primaryVoiceId;
 
   // Model selection — multilingual_v2 handles non-Latin scripts (Hebrew,
   // Mandarin, Hindi, etc.) much better than Turbo. Auto-pick multilingual

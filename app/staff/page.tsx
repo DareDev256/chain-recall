@@ -90,6 +90,63 @@ export default function StaffPage() {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const interimRef = useRef<string>("");
+  // Track every currently-playing Audio element so we can cancel before
+  // starting a new utterance — prevents Sandy + Hill (or whisper + handoff)
+  // talking over each other.
+  const activeAudioRef = useRef<HTMLAudioElement[]>([]);
+  const activeUrlsRef = useRef<string[]>([]);
+
+  const stopAllAudio = () => {
+    for (const a of activeAudioRef.current) {
+      try {
+        a.pause();
+        a.src = "";
+      } catch {
+        // ignore
+      }
+    }
+    activeAudioRef.current = [];
+    for (const url of activeUrlsRef.current) {
+      try {
+        URL.revokeObjectURL(url);
+      } catch {
+        // ignore
+      }
+    }
+    activeUrlsRef.current = [];
+    if (typeof window !== "undefined" && typeof window.speechSynthesis !== "undefined") {
+      try {
+        window.speechSynthesis.cancel();
+      } catch {
+        // ignore
+      }
+    }
+  };
+
+  // Helper: play one audio blob, tracked so stopAllAudio can cancel it
+  const playTrackedAudio = async (blob: Blob): Promise<void> => {
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    activeAudioRef.current.push(audio);
+    activeUrlsRef.current.push(url);
+    await new Promise<void>((resolve) => {
+      const cleanup = () => {
+        const idx = activeAudioRef.current.indexOf(audio);
+        if (idx >= 0) activeAudioRef.current.splice(idx, 1);
+        const uidx = activeUrlsRef.current.indexOf(url);
+        if (uidx >= 0) activeUrlsRef.current.splice(uidx, 1);
+        try {
+          URL.revokeObjectURL(url);
+        } catch {
+          // ignore
+        }
+        resolve();
+      };
+      audio.onended = cleanup;
+      audio.onerror = cleanup;
+      audio.play().catch(cleanup);
+    });
+  };
 
   // clear state when the property changes — we are now a different tablet
   useEffect(() => {
@@ -120,6 +177,10 @@ export default function StaffPage() {
       // ignore
     }
 
+    // Stop anything currently playing so the handoff doesn't talk over a
+    // whisper or greeting that's mid-line.
+    stopAllAudio();
+
     // First-time handoff: Sandy introduces Hill in Sandy's voice, then Hill says hi
     if (next === "hill" && !hillHandoffShownRef.current) {
       hillHandoffShownRef.current = true;
@@ -145,18 +206,9 @@ export default function StaffPage() {
           const sandyType = sandyRes.headers.get("Content-Type") || "";
           if (sandyType.startsWith("audio/")) {
             const blob = await sandyRes.blob();
-            const url = URL.createObjectURL(blob);
-            const audio = new Audio(url);
-            await new Promise<void>((resolve) => {
-              audio.onended = () => {
-                URL.revokeObjectURL(url);
-                resolve();
-              };
-              audio.play().catch(() => resolve());
-            });
+            await playTrackedAudio(blob);
           }
-
-          // Then Hill speaks (in his voice)
+          // Then Hill speaks (in his voice — explicit "hill" param triggers male voice ID)
           const hillRes = await fetch("/api/synth", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -165,10 +217,7 @@ export default function StaffPage() {
           const hillType = hillRes.headers.get("Content-Type") || "";
           if (hillType.startsWith("audio/")) {
             const blob = await hillRes.blob();
-            const url = URL.createObjectURL(blob);
-            const audio = new Audio(url);
-            audio.onended = () => URL.revokeObjectURL(url);
-            await audio.play().catch(() => URL.revokeObjectURL(url));
+            await playTrackedAudio(blob);
           }
         }
         setTimeout(() => setSubtitle(null), 22000);
@@ -239,6 +288,7 @@ export default function StaffPage() {
 
   const whisper = async () => {
     if (!context || whispering) return;
+    stopAllAudio();
     setWhispering(true);
     try {
       const res = await fetch("/api/whisper", {
@@ -261,14 +311,9 @@ export default function StaffPage() {
           }
         }
         const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
         if (scriptText) setSubtitle(scriptText);
         if (!muted) {
-          const audio = new Audio(url);
-          audio.onended = () => URL.revokeObjectURL(url);
-          await audio.play();
-        } else {
-          URL.revokeObjectURL(url);
+          await playTrackedAudio(blob);
         }
       } else {
         const data = await res.json();
@@ -298,6 +343,7 @@ export default function StaffPage() {
     if (!context || greeting) return;
     const line = getGreeting(context.guestId);
     if (!line) return;
+    stopAllAudio();
     setGreeting(true);
     setSubtitle(
       `${line.text}\n\n${line.englishTranslation}`,
@@ -311,13 +357,8 @@ export default function StaffPage() {
       const contentType = res.headers.get("Content-Type") || "";
       if (contentType.startsWith("audio/")) {
         const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
         if (!muted) {
-          const audio = new Audio(url);
-          audio.onended = () => URL.revokeObjectURL(url);
-          await audio.play().catch(() => URL.revokeObjectURL(url));
-        } else {
-          URL.revokeObjectURL(url);
+          await playTrackedAudio(blob);
         }
       } else {
         const data = await res.json();
@@ -361,6 +402,7 @@ export default function StaffPage() {
       const ack = `Noted. "${shortTranscript}." Added${guestPart}.`;
 
       try {
+        stopAllAudio();
         const ackRes = await fetch("/api/synth", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -369,10 +411,7 @@ export default function StaffPage() {
         const ackType = ackRes.headers.get("Content-Type") || "";
         if (ackType.startsWith("audio/")) {
           const blob = await ackRes.blob();
-          const url = URL.createObjectURL(blob);
-          const audio = new Audio(url);
-          audio.onended = () => URL.revokeObjectURL(url);
-          await audio.play();
+          await playTrackedAudio(blob);
         } else if (typeof window.speechSynthesis !== "undefined") {
           const utter = new SpeechSynthesisUtterance(ack);
           utter.rate = 0.95;
@@ -497,35 +536,37 @@ export default function StaffPage() {
     <main className="flex-1 flex flex-col px-12 py-10 max-w-5xl mx-auto w-full relative">
       {subtitle && (
         <div
-          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 max-w-3xl bg-[var(--color-ink)] text-[var(--color-cream)] px-7 py-4 rounded-sm border border-[var(--color-accent)] shadow-2xl"
+          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-[min(92vw,720px)] bg-[var(--color-ink)] text-[var(--color-cream)] px-6 py-4 rounded-sm border border-[var(--color-accent)] shadow-2xl"
           role="status"
           aria-live="polite"
         >
-          <div className="flex items-start gap-3">
-            <span className="font-sans text-[9px] uppercase tracking-[0.3em] text-[var(--color-accent)] mt-1 whitespace-nowrap">
-              {voiceCharacter === "hill" ? "Hill" : "Sandy"} · {muted ? "subtitled" : "speaking"}
-            </span>
-            <div className="flex-1">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between gap-3">
+              <span className="font-sans text-[9px] uppercase tracking-[0.3em] text-[var(--color-accent)] whitespace-nowrap">
+                {voiceCharacter === "hill" ? "Hill" : "Sandy"} · {muted ? "subtitled" : "speaking"}
+              </span>
+              <button
+                onClick={() => setSubtitle(null)}
+                className="font-sans text-xs text-[var(--color-cream)]/60 hover:text-[var(--color-cream)] transition-colors leading-none"
+                aria-label="Dismiss subtitle"
+              >
+                ×
+              </button>
+            </div>
+            <div className="flex flex-col gap-2 break-words">
               {subtitle.split("\n\n").map((line, i) => (
                 <p
                   key={i}
                   className={
                     i === 0
-                      ? "font-serif text-base italic leading-snug"
-                      : "font-sans text-[11px] leading-snug text-[var(--color-cream)]/65 mt-2 italic"
+                      ? "font-serif text-base italic leading-snug break-words"
+                      : "font-sans text-[12px] leading-snug text-[var(--color-cream)]/65 italic break-words"
                   }
                 >
                   {i === 0 ? <>&ldquo;{line}&rdquo;</> : <>&mdash; {line}</>}
                 </p>
               ))}
             </div>
-            <button
-              onClick={() => setSubtitle(null)}
-              className="font-sans text-[10px] uppercase tracking-[0.2em] text-[var(--color-cream)]/60 hover:text-[var(--color-cream)] transition-colors ml-2"
-              aria-label="Dismiss subtitle"
-            >
-              ×
-            </button>
           </div>
         </div>
       )}
