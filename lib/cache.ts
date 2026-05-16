@@ -16,14 +16,17 @@ export const CACHED_BRIEFS: Record<string, Brief> = {
       {
         item: "Chamomile + electric kettle, bedside, pre-placed before check-in",
         sourcedFrom: "Rosewood London · Jan 2026 — handwritten thank-you note to GM",
+        loggedBy: "Reception · London, Tom Bradley, 22 Jan 2026 22:47 (night shift)",
       },
       {
         item: "Lavender-free turndown package (cedar or unscented substitute)",
         sourcedFrom: "Rosewood Hong Kong · Mar 2026 + Nov 2025 — confirmed allergy",
+        loggedBy: "Housekeeping · Hong Kong, Ah-Ling Wong, 14 Mar 2026 21:18",
       },
       {
         item: "A Didion follow-up — 'The Year of Magical Thinking' on the bedside",
         sourcedFrom: "Rosewood Hong Kong · Nov 2025 — borrowed 'The White Album' from the Manor Club library",
+        loggedBy: "Manor Club library · Hong Kong, Vincent Lai, 04 Nov 2025",
       },
     ],
     suggestedQuestions: [
@@ -31,11 +34,20 @@ export const CACHED_BRIEFS: Record<string, Brief> = {
         question:
           "Would you like the chamomile and kettle service for the full stay, similar to your London arrival?",
         basedOn: "Rosewood London · Jan 2026 — she wrote a thank-you note for the late-arrival kettle",
+        loggedBy: "Front desk · London, Tom Bradley, 23 Jan 2026 09:12 (handover note)",
+      },
+      {
+        question:
+          "On your Hong Kong stays you visited the Hong Kong Museum of Art twice — shall we arrange a private viewing at the Cantor Arts Center at Stanford?",
+        basedOn:
+          "Rosewood Hong Kong · Mar 2026 + Nov 2025 — concierge booked both visits; she stayed >2 hours each time",
+        loggedBy: "Concierge · Hong Kong, Mei Cheng, 14 Mar 2026 + 03 Nov 2025",
       },
       {
         question:
           "Is Emma joining you in California, or is she home in Hong Kong this trip?",
         basedOn: "Rosewood Hong Kong · Mar 2026 — mentioned daughter's school recital; her 8th birthday is May 22",
+        loggedBy: "Server · HENRY restaurant, Hong Kong, Felix Cheung, 14 Mar 2026 20:40",
       },
     ],
     localSuggestions: [
@@ -223,18 +235,22 @@ export const CACHED_BRIEFS: Record<string, Brief> = {
       {
         item: "French press + Israeli black blend (ground), bedside, ready for 6:30am",
         sourcedFrom: "Rosewood London · Apr 2026 — bedside setup, no morning service intrusion",
+        loggedBy: "Housekeeping · London, Anika Patel, 22 Apr 2026 05:50 (early shift)",
       },
       {
         item: "Light vegetarian room-service dinner (cold plate + miso broth or local equivalent), pre-stocked",
         sourcedFrom: "Rosewood Hong Kong · Nov 2025 — jet-lag arrival, light room-service first night",
+        loggedBy: "In-Room Dining · Hong Kong, Felix Cheung, 08 Nov 2025 19:32",
       },
       {
         item: "Blackout shades drawn an hour before turndown — automatic",
         sourcedFrom: "Rosewood London · Dec 2025 — set across 4-night family stay",
+        loggedBy: "Housekeeping · London, Maria Costa, 20 Dec 2025 (carried into nightly turndown)",
       },
       {
         item: "Manhattan up, twist (no orange) — primed at Madera Bar",
         sourcedFrom: "Rosewood Hong Kong · Nov 2025 — DarkSide bar profile",
+        loggedBy: "Bar · DarkSide, Hong Kong, Wei Chen, 08 Nov 2025 22:15 (mid-shift handover)",
       },
     ],
     suggestedQuestions: [
@@ -243,11 +259,20 @@ export const CACHED_BRIEFS: Record<string, Brief> = {
           "Will Rachel be joining you in California, or is this a working trip?",
         basedOn:
           "Rosewood London · Dec 2025 — Grand Manor House Wing family stay; Rachel only joins for non-business stays",
+        loggedBy: "Front desk · London, Tom Bradley, 19 Dec 2025 (check-in note)",
+      },
+      {
+        question:
+          "On your December family stay you toured the Tower of London with Rachel — shall we arrange the Filoli Estate gardens tour if you extend?",
+        basedOn:
+          "Rosewood London · Dec 2025 — concierge booked Tower of London Ceremony of the Keys for the family",
+        loggedBy: "Concierge · London, Henrietta Vaughn, 21 Dec 2025 (post-tour follow-up)",
       },
       {
         question:
           "Shall we hold a quiet room-service dinner tonight given the long flight, or do you prefer Madera at a quieter hour?",
         basedOn: "Rosewood Hong Kong · Nov 2025 — light room-service on jet-lag arrival; never the dining room first night",
+        loggedBy: "In-Room Dining · Hong Kong, Felix Cheung, 08 Nov 2025 19:32",
       },
     ],
     localSuggestions: [

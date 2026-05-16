@@ -11,6 +11,14 @@ export type Property = {
 export type AmenityObservation = {
   item: string;
   observation: string;
+  loggedBy?: string;
+};
+
+export type AttractionVisit = {
+  name: string;
+  date?: string;
+  loggedBy?: string;
+  guestComment?: string;
 };
 
 export type Visit = {
@@ -18,6 +26,7 @@ export type Visit = {
   date: string;
   notes: string[];
   amenitiesUsed?: AmenityObservation[];
+  attractionsVisited?: AttractionVisit[];
 };
 
 export type GuestProfile = {
@@ -45,11 +54,13 @@ export type GuestProfile = {
 export type AmenityReplenishment = {
   item: string;
   sourcedFrom: string;
+  loggedBy?: string;
 };
 
 export type SuggestedQuestion = {
   question: string;
   basedOn: string;
+  loggedBy?: string;
 };
 
 export type ArrivalIntel = {
@@ -64,6 +75,7 @@ export type LocalSuggestion = {
   detail: string;
   walkingMinutes?: number;
   basedOn: string;
+  loggedBy?: string;
 };
 
 export type Brief = {
