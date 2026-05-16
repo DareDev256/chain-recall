@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { BRAND, PROPERTY_PLATES } from "./brand-tokens";
 
@@ -12,8 +12,87 @@ const PROPERTIES = [
 
 type Stage = "rosewood" | "sandy" | "interior";
 
+const MUTE_STORAGE_KEY = "sandy:intro-muted";
+const SANDY_INTRO_SCRIPT = "I am Sandy. The institutional memory of Rosewood.";
+
 export default function Home() {
   const [stage, setStage] = useState<Stage>("rosewood");
+  const [introMuted, setIntroMuted] = useState(false);
+  const [audioReady, setAudioReady] = useState(false);
+  const narrationFiredRef = useRef(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(MUTE_STORAGE_KEY);
+      if (stored === "1") setIntroMuted(true);
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  useEffect(() => {
+    const prime = () => setAudioReady(true);
+    document.addEventListener("click", prime, { once: true });
+    document.addEventListener("keydown", prime, { once: true });
+    return () => {
+      document.removeEventListener("click", prime);
+      document.removeEventListener("keydown", prime);
+    };
+  }, []);
+
+  // Fire Sandy narration once when entering the sandy stage (if audio primed + not muted)
+  useEffect(() => {
+    if (stage !== "sandy") return;
+    if (narrationFiredRef.current) return;
+    if (introMuted) return;
+    if (!audioReady) return;
+
+    narrationFiredRef.current = true;
+    (async () => {
+      try {
+        const res = await fetch("/api/synth", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: SANDY_INTRO_SCRIPT }),
+        });
+        const contentType = res.headers.get("Content-Type") || "";
+        if (contentType.startsWith("audio/")) {
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const audio = new Audio(url);
+          audio.onended = () => URL.revokeObjectURL(url);
+          audio.volume = 0.85;
+          await audio.play();
+        } else {
+          const data = await res.json();
+          if (data.script && typeof window.speechSynthesis !== "undefined") {
+            const utter = new SpeechSynthesisUtterance(data.script);
+            utter.rate = 0.92;
+            utter.pitch = 0.88;
+            utter.volume = 0.85;
+            window.speechSynthesis.speak(utter);
+          }
+        }
+      } catch {
+        // fail silently
+      }
+    })();
+  }, [stage, introMuted, audioReady]);
+
+  const toggleMute = () => {
+    setIntroMuted((m) => {
+      const next = !m;
+      try {
+        localStorage.setItem(MUTE_STORAGE_KEY, next ? "1" : "0");
+      } catch {
+        // ignore
+      }
+      if (next && typeof window.speechSynthesis !== "undefined") {
+        window.speechSynthesis.cancel();
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     const toSandy = setTimeout(() => setStage("sandy"), 2200);
@@ -26,6 +105,15 @@ export default function Home() {
 
   return (
     <main className="flex-1 relative">
+      {/* Global mute toggle — top-right, always available */}
+      <button
+        onClick={toggleMute}
+        className="absolute top-6 right-6 z-50 font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)] hover:text-[var(--color-ink)] transition-colors"
+        title={introMuted ? "Sandy narration muted (remembered)" : "Sandy narration on — click to mute"}
+      >
+        {introMuted ? "🔇 Sandy muted" : "🔊 Sandy speaks"}
+      </button>
+
       {/* Phase 0 — Rosewood mark fades in, holds, fades to Sandy */}
       <section
         aria-hidden={stage !== "rosewood"}
