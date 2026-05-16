@@ -3,20 +3,37 @@
 import { useState } from "react";
 
 const GUESTS = [
-  { id: "sarah-chen", name: "Sarah Chen", note: "Toronto member, first LA visit" },
-  { id: "marcus-okafor", name: "Marcus Okafor", note: "NYC member, first Toronto visit" },
-  { id: "priya-sharma", name: "Priya Sharma", note: "SF-based, first LA visit" },
+  {
+    id: "mei-lin-chen",
+    name: "Mei Lin Chen",
+    note: "Hong Kong regular · first Sand Hill visit",
+  },
+  {
+    id: "marcus-okafor",
+    name: "Marcus Okafor",
+    note: "London regular · first Sand Hill visit · knee recovery",
+  },
+  {
+    id: "priya-sharma",
+    name: "Priya Sharma",
+    note: "Hong Kong regular · first Sand Hill visit · Series A close",
+  },
+  {
+    id: "daniel-edson",
+    name: "Daniel Edson",
+    note: "London regular · just landed SFO from Tel Aviv · 7h flight",
+  },
 ];
 
 const PROPERTIES = [
-  { id: "la", name: "Los Angeles · Beverly Grove" },
-  { id: "toronto", name: "Toronto · King East" },
-  { id: "nyc", name: "New York · SoHo" },
+  { id: "sand-hill", name: "Sand Hill · Menlo Park" },
+  { id: "hong-kong", name: "Hong Kong · Tsim Sha Tsui" },
+  { id: "london", name: "London · High Holborn" },
 ];
 
 export default function ArrivePage() {
   const [sending, setSending] = useState<string | null>(null);
-  const [property, setProperty] = useState("la");
+  const [property, setProperty] = useState("sand-hill");
 
   async function trigger(guestId: string) {
     setSending(guestId);
@@ -38,7 +55,8 @@ export default function ArrivePage() {
       </p>
       <h1 className="font-serif text-4xl mb-2">Walk in.</h1>
       <p className="font-sans text-sm text-[var(--color-ink-soft)] text-center max-w-md">
-        Production: BLE beacon at entry. Demo: tap your name.
+        Production: BLE beacon at entry, license-plate recognition at valet, app geofence.
+        Demo: tap your name.
       </p>
 
       <div className="mt-10 w-full">

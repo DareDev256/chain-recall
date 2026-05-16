@@ -28,17 +28,27 @@ export default function StaffPage() {
       <header className="flex items-baseline justify-between border-b border-[var(--color-rule)] pb-6">
         <div>
           <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)]">
-            Halcyon · Front of House
+            Rosewood Sand Hill · Front of House
           </p>
-          <h1 className="font-serif text-3xl mt-1">Los Angeles · Beverly Grove</h1>
+          <h1 className="font-serif text-3xl mt-1">Menlo Park · Sand Hill Road</h1>
         </div>
-        <div className="flex items-center gap-2 font-sans text-xs text-[var(--color-ink-faint)]">
-          <span
-            className={`inline-block w-1.5 h-1.5 rounded-full ${
-              connected ? "bg-emerald-500" : "bg-zinc-400"
-            }`}
-          />
-          {connected ? "Listening" : "Disconnected"}
+        <div className="flex items-center gap-4 font-sans text-xs text-[var(--color-ink-faint)]">
+          {brief && (
+            <button
+              onClick={() => setBrief(null)}
+              className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)] hover:text-[var(--color-ink)] transition-colors"
+            >
+              Reset
+            </button>
+          )}
+          <div className="flex items-center gap-2">
+            <span
+              className={`inline-block w-1.5 h-1.5 rounded-full ${
+                connected ? "bg-emerald-500" : "bg-zinc-400"
+              }`}
+            />
+            {connected ? "Listening" : "Disconnected"}
+          </div>
         </div>
       </header>
 
@@ -52,11 +62,7 @@ export default function StaffPage() {
           </p>
         </div>
       ) : (
-        <article
-          className={`mt-10 transition-opacity duration-700 ${
-            pulse ? "opacity-100" : "opacity-100"
-          }`}
-        >
+        <article className="mt-10">
           <div className="flex items-baseline gap-4">
             <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-accent)]">
               Member arriving
@@ -74,8 +80,24 @@ export default function StaffPage() {
             {brief.visitContext}
           </p>
 
+          {brief.arrivalIntel && (
+            <section className="mt-8 border border-[var(--color-rule)] bg-[var(--color-cream-tint)] p-6 max-w-3xl">
+              <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-accent)] mb-3">
+                Arrival intel
+              </p>
+              <p className="font-serif text-xl leading-snug mb-3">
+                {brief.arrivalIntel.expectedAt}
+              </p>
+              <ul className="space-y-1.5 font-sans text-sm text-[var(--color-ink-soft)] leading-relaxed">
+                <li>{brief.arrivalIntel.flightContext}</li>
+                <li>{brief.arrivalIntel.baggageNote}</li>
+                <li className="italic">{brief.arrivalIntel.energyState}</li>
+              </ul>
+            </section>
+          )}
+
           {brief.accessibilityNeeds && brief.accessibilityNeeds.length > 0 && (
-            <section className="mt-10 border-l-2 border-[var(--color-accent)] pl-6 max-w-2xl bg-[var(--color-accent)]/5 py-4 -ml-6 pl-12">
+            <section className="mt-10 border-l-2 border-[var(--color-accent)] py-4 pl-6 max-w-2xl">
               <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-accent)] mb-2 font-semibold">
                 Non-negotiable
               </p>
@@ -143,6 +165,53 @@ export default function StaffPage() {
                     <p className="font-sans text-[11px] text-[var(--color-ink-faint)] mt-1">
                       {q.basedOn}
                     </p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {brief.localSuggestions && brief.localSuggestions.length > 0 && (
+            <section className="mt-12">
+              <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)]">
+                If they have time
+              </p>
+              <ul className="mt-4 space-y-4 max-w-3xl">
+                {brief.localSuggestions.map((s, i) => (
+                  <li key={i} className="pl-6 relative">
+                    <span className="absolute left-0 top-3 w-3 h-px bg-[var(--color-ink)]" />
+                    <div className="flex items-baseline gap-3">
+                      <p className="font-serif text-lg leading-snug">{s.title}</p>
+                      {s.walkingMinutes !== undefined && s.walkingMinutes !== null && (
+                        <span className="font-sans text-[11px] text-[var(--color-ink-faint)] uppercase tracking-[0.2em]">
+                          {s.walkingMinutes} min walk
+                        </span>
+                      )}
+                    </div>
+                    <p className="font-sans text-sm text-[var(--color-ink-soft)] mt-1 leading-snug">
+                      {s.detail}
+                    </p>
+                    <p className="font-sans text-[11px] text-[var(--color-ink-faint)] mt-1 italic">
+                      {s.basedOn}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {brief.discretionFlags && brief.discretionFlags.length > 0 && (
+            <section className="mt-12 border border-[var(--color-rule)] bg-[var(--color-cream-tint)] p-6 max-w-3xl">
+              <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)] mb-3">
+                Do not say
+              </p>
+              <ul className="space-y-2">
+                {brief.discretionFlags.map((flag, i) => (
+                  <li
+                    key={i}
+                    className="font-serif text-base italic leading-snug text-[var(--color-ink-soft)]"
+                  >
+                    {flag}
                   </li>
                 ))}
               </ul>

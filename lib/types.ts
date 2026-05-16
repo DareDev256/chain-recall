@@ -1,4 +1,4 @@
-export type PropertyId = "toronto" | "nyc" | "la";
+export type PropertyId = "hong-kong" | "sand-hill" | "london";
 
 export type Property = {
   id: PropertyId;
@@ -52,13 +52,30 @@ export type SuggestedQuestion = {
   basedOn: string;
 };
 
+export type ArrivalIntel = {
+  expectedAt: string;
+  flightContext: string;
+  baggageNote: string;
+  energyState: string;
+};
+
+export type LocalSuggestion = {
+  title: string;
+  detail: string;
+  walkingMinutes?: number;
+  basedOn: string;
+};
+
 export type Brief = {
   guestName: string;
   visitContext: string;
+  arrivalIntel?: ArrivalIntel;
   accessibilityNeeds: string[];
   prepActions: string[];
   amenityReplenishment: AmenityReplenishment[];
   suggestedQuestions: SuggestedQuestion[];
+  localSuggestions?: LocalSuggestion[];
+  discretionFlags?: string[];
   emotionalNotes: string;
   sourceVisits: string[];
 };
