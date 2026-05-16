@@ -41,3 +41,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# rosewood scrape — too big for GitHub (157MB exceeds 100MB limit)
+# Reproducible via scripts/scrape/{fetch_pages,extract_urls,download}.sh
+public/properties/hong-kong/videos/RWHKG_Video_Facilities_Wellness_Asaya-Main-Video.mp4
+
+# scrape intermediates — bulky, reproducible
+scripts/scrape/raw/
+scripts/scrape/models/
