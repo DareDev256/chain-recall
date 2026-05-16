@@ -4,6 +4,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import type { Brief, PropertyId } from "@/lib/types";
 import { LiveEta } from "./LiveEta";
+import { ArrivalMap } from "./ArrivalMap";
+
+const BRIEF_STORAGE_KEY = "sandy:lastBrief";
 
 type Context = { guestId: string; propertyId: string };
 
@@ -76,6 +79,24 @@ export default function StaffPage() {
     setBrief(null);
     setComputing(false);
     setContext(null);
+  }, [currentProperty]);
+
+  // restore last brief on mount so back/forward navigation doesn't blank the tablet
+  useEffect(() => {
+    try {
+      const stored = sessionStorage.getItem(BRIEF_STORAGE_KEY);
+      if (!stored) return;
+      const parsed = JSON.parse(stored) as {
+        brief: Brief;
+        context: Context;
+        property: PropertyId;
+      };
+      if (parsed.property !== currentProperty) return;
+      setBrief(parsed.brief);
+      setContext(parsed.context);
+    } catch {
+      // ignore — corrupt storage just means no restore
+    }
   }, [currentProperty]);
 
   useEffect(() => {
@@ -245,6 +266,18 @@ export default function StaffPage() {
         setTimeout(() => setPulse(false), 1200);
         setBrief(data.brief);
         setContext({ guestId: data.guestId, propertyId: data.propertyId });
+        try {
+          sessionStorage.setItem(
+            BRIEF_STORAGE_KEY,
+            JSON.stringify({
+              brief: data.brief,
+              context: { guestId: data.guestId, propertyId: data.propertyId },
+              property: currentProperty,
+            }),
+          );
+        } catch {
+          // storage unavailable — fine, just no persistence
+        }
         playChime();
       } else if (data.type === "note") {
         setRecentNote({
@@ -312,6 +345,11 @@ export default function StaffPage() {
                 setBrief(null);
                 setComputing(false);
                 setContext(null);
+                try {
+                  sessionStorage.removeItem(BRIEF_STORAGE_KEY);
+                } catch {
+                  // ignore
+                }
               }}
               className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)] hover:text-[var(--color-ink)] transition-colors"
             >
@@ -389,6 +427,7 @@ export default function StaffPage() {
               <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-accent)] mb-3">
                 Arrival intel
               </p>
+              <ArrivalMap resetKey={context?.guestId} />
               <LiveEta resetKey={context?.guestId} />
               <p className="font-sans text-[11px] uppercase tracking-[0.2em] text-[var(--color-ink-faint)] mb-3">
                 {brief.arrivalIntel.expectedAt}
