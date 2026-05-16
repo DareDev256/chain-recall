@@ -79,6 +79,8 @@ export default function StaffPage() {
   const [whispering, setWhispering] = useState(false);
   const [listening, setListening] = useState(false);
   const [recentNote, setRecentNote] = useState<CapturedNote | null>(null);
+  const [muted, setMuted] = useState(false);
+  const [subtitle, setSubtitle] = useState<string | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const interimRef = useRef<string>("");
@@ -160,22 +162,44 @@ export default function StaffPage() {
       });
 
       const contentType = res.headers.get("Content-Type") || "";
+      let scriptText: string | null = null;
 
       if (contentType.startsWith("audio/")) {
+        // try to read the base64-encoded script header set by /api/whisper
+        const hdr = res.headers.get("X-Whisper-Script");
+        if (hdr) {
+          try {
+            scriptText = atob(hdr);
+          } catch {
+            // ignore decode error
+          }
+        }
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
-        const audio = new Audio(url);
-        audio.onended = () => URL.revokeObjectURL(url);
-        await audio.play();
+        if (scriptText) setSubtitle(scriptText);
+        if (!muted) {
+          const audio = new Audio(url);
+          audio.onended = () => URL.revokeObjectURL(url);
+          await audio.play();
+        } else {
+          URL.revokeObjectURL(url);
+        }
       } else {
         const data = await res.json();
-        if (data.script && typeof window.speechSynthesis !== "undefined") {
-          const utter = new SpeechSynthesisUtterance(data.script);
+        scriptText = data.script || null;
+        if (scriptText) setSubtitle(scriptText);
+        if (!muted && scriptText && typeof window.speechSynthesis !== "undefined") {
+          const utter = new SpeechSynthesisUtterance(scriptText);
           utter.rate = 0.95;
           utter.pitch = 0.85;
           utter.volume = 0.7;
           window.speechSynthesis.speak(utter);
         }
+      }
+
+      // auto-dismiss subtitle after a beat
+      if (scriptText) {
+        setTimeout(() => setSubtitle((curr) => (curr === scriptText ? null : curr)), 18000);
       }
     } catch (err) {
       console.warn("[whisper] failed:", err);
@@ -337,7 +361,30 @@ export default function StaffPage() {
   const labels = PROPERTY_LABEL[currentProperty];
 
   return (
-    <main className="flex-1 flex flex-col px-12 py-10 max-w-5xl mx-auto w-full">
+    <main className="flex-1 flex flex-col px-12 py-10 max-w-5xl mx-auto w-full relative">
+      {subtitle && (
+        <div
+          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 max-w-3xl bg-[var(--color-ink)] text-[var(--color-cream)] px-7 py-4 rounded-sm border border-[var(--color-accent)] shadow-2xl"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-start gap-3">
+            <span className="font-sans text-[9px] uppercase tracking-[0.3em] text-[var(--color-accent)] mt-1 whitespace-nowrap">
+              {muted ? "Sandy · subtitled" : "Sandy · speaking"}
+            </span>
+            <p className="font-serif text-base italic leading-snug">
+              &ldquo;{subtitle}&rdquo;
+            </p>
+            <button
+              onClick={() => setSubtitle(null)}
+              className="font-sans text-[10px] uppercase tracking-[0.2em] text-[var(--color-cream)]/60 hover:text-[var(--color-cream)] transition-colors ml-2"
+              aria-label="Dismiss subtitle"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
       <header className="flex items-baseline justify-between border-b border-[var(--color-rule)] pb-6">
         <div>
           <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)]">
@@ -380,9 +427,20 @@ export default function StaffPage() {
               disabled={whispering}
               className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-accent)] hover:text-[var(--color-ink)] transition-colors disabled:opacity-50"
             >
-              {whispering ? "Whispering…" : "Whisper"}
+              {whispering ? "Whispering…" : muted ? "Whisper · subtitled" : "Whisper"}
             </button>
           )}
+          <button
+            onClick={() => setMuted((m) => !m)}
+            className={`font-sans text-[10px] uppercase tracking-[0.3em] transition-colors ${
+              muted
+                ? "text-[var(--color-accent)] hover:text-[var(--color-ink)]"
+                : "text-[var(--color-ink-faint)] hover:text-[var(--color-ink)]"
+            }`}
+            title={muted ? "Audio muted — subtitles only" : "Audio on — click to mute and use subtitles"}
+          >
+            {muted ? "🔇 Muted" : "🔊 Sound"}
+          </button>
           {(brief || computing) && (
             <button
               onClick={() => {
