@@ -79,6 +79,7 @@ export default function StaffPage() {
   const [whispering, setWhispering] = useState(false);
   const [listening, setListening] = useState(false);
   const [recentNote, setRecentNote] = useState<CapturedNote | null>(null);
+  const [allNotes, setAllNotes] = useState<CapturedNote[]>([]);
   const [muted, setMuted] = useState(false);
   const [subtitle, setSubtitle] = useState<string | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -345,13 +346,15 @@ export default function StaffPage() {
         }
         playChime();
       } else if (data.type === "note") {
-        setRecentNote({
+        const note: CapturedNote = {
           id: data.note.id,
           transcript: data.note.transcript,
           capturedAt: data.note.capturedAt,
-        });
+        };
+        setRecentNote(note);
+        setAllNotes((curr) => [note, ...curr].slice(0, 20));
         setTimeout(() => {
-          setRecentNote((curr) => (curr?.id === data.note.id ? null : curr));
+          setRecentNote((c) => (c?.id === note.id ? null : c));
         }, 6500);
       }
     };
@@ -771,6 +774,32 @@ export default function StaffPage() {
               ))}
             </div>
           </section>
+
+          {allNotes.length > 0 && (
+            <section className="mt-12">
+              <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)]">
+                Staff notes this session · {allNotes.length}
+              </p>
+              <ul className="mt-4 space-y-3 max-w-3xl">
+                {allNotes.slice(0, 5).map((n) => (
+                  <li key={n.id} className="pl-6 relative">
+                    <span className="absolute left-0 top-3 w-3 h-px bg-[var(--color-accent)]" />
+                    <p className="font-serif text-base italic leading-snug">
+                      &ldquo;{n.transcript}&rdquo;
+                    </p>
+                    <p className="font-sans text-[10px] text-[var(--color-ink-faint)] mt-1 italic">
+                      Captured {new Date(n.capturedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} · queued for next compose() pass · production: writes to OPERA profile via Hapi
+                    </p>
+                  </li>
+                ))}
+                {allNotes.length > 5 && (
+                  <li className="pl-6 font-sans text-[10px] uppercase tracking-[0.25em] text-[var(--color-ink-faint)] italic">
+                    + {allNotes.length - 5} more this session
+                  </li>
+                )}
+              </ul>
+            </section>
+          )}
 
           <section className="mt-8 flex flex-wrap gap-x-6 gap-y-1 font-sans text-[10px] uppercase tracking-[0.25em] text-[var(--color-ink-faint)] italic">
             <span>Brief composed · Claude Opus 4.7 · ~$0.13</span>

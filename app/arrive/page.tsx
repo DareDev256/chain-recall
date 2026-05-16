@@ -55,18 +55,20 @@ export default function ArrivePage() {
 
   return (
     <main className="flex-1 flex flex-col items-center justify-center px-8 py-16 max-w-2xl mx-auto w-full">
-      <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)] mb-2">
-        Member Arrival Trigger · Guest Side
+      <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-accent)] mb-2">
+        Demo Trigger · Presenter Surface
       </p>
       <h1 className="font-serif text-4xl mb-2">Walk in.</h1>
       <p className="font-sans text-sm text-[var(--color-ink-soft)] text-center max-w-lg leading-relaxed">
-        This is the surface a member touches before arrival. The guest never sees AI.
+        <span className="font-semibold text-[var(--color-ink)]">This page is for the demo presenter</span> — it lists all five members at once
+        so we can fire any arrival on stage. <span className="italic">A real member never sees this view.</span>
         <br /><br />
         <span className="text-[var(--color-ink-faint)] italic">
-          Production: BLE beacon at property entry, license-plate recognition at valet,
-          app geofence, or QR scan at the airport lounge. Push notifications + live activity
-          remind the member &amp; prep front-of-house. Demo: tap a member&rsquo;s name to fire the
-          same event.
+          In production each member only sees their own arrival prompt — triggered automatically
+          by a BLE beacon at the property entry, license-plate recognition at the valet, an app
+          geofence on the airport drive, or a QR scan at the lounge. Push notifications + live
+          activity remind THEM &amp; prep front-of-house. No member ever sees another member&rsquo;s
+          name.
         </span>
       </p>
 
