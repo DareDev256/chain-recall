@@ -181,14 +181,9 @@ export default function StaffPage() {
     // whisper or greeting that's mid-line.
     stopAllAudio();
 
-    // First-time handoff: Sandy introduces Hill in Sandy's voice, then Hill says hi
-    if (next === "hill" && !hillHandoffShownRef.current) {
-      hillHandoffShownRef.current = true;
-      try {
-        localStorage.setItem("sandy:hill-introduced", "1");
-      } catch {
-        // ignore
-      }
+    // Handoff: Sandy introduces Hill in Sandy's voice, then Hill says hi
+    // Plays every time toggling to Hill so judges can demo it repeatedly.
+    if (next === "hill") {
       try {
         const sandyLine =
           "If you'd prefer a different voice, my partner Hill is also at your service.";

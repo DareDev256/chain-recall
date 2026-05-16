@@ -452,6 +452,60 @@ export const CACHED_BRIEFS: Record<string, Brief> = {
       "Member profile · contractual visit confirmation only",
     ],
   },
+  // ──── Cross-property safety net ────
+  // Minimal briefs for HK and London so the property switcher demo doesn't
+  // stick on "computing" if a judge clicks around. Each is a return-home
+  // scenario where the brief is naturally smaller.
+  "mei-lin-chen-hong-kong": {
+    guestName: "Mei Lin Chen",
+    visitContext: "Member since 2024 · returning to home property (Rosewood Hong Kong). Last stay was 6 weeks ago.",
+    accessibilityNeeds: [],
+    prepActions: [
+      "Manor Club 40F access confirmed (member tier)",
+      "Room at 19°C — standard preference",
+      "Chamomile + kettle ready bedside (consistent across stays)",
+      "Lavender-free turndown — confirmed allergy",
+    ],
+    amenityReplenishment: [
+      { item: "Chamomile + kettle bedside (her standard)", sourcedFrom: "Rosewood Hong Kong · Mar 2026 + Nov 2025" },
+      { item: "Lavender-free turndown", sourcedFrom: "Allergy flag · system-wide" },
+    ],
+    suggestedQuestions: [
+      { question: "Welcome home, Ms. Chen. Same Manor Club room, or would you like the harbour-facing corner?", basedOn: "Pattern: prefers harbour view across both prior HK stays" },
+    ],
+    discretionFlags: [],
+    emotionalNotes: "Frequent HK guest. Discreet, prefers minimal welcome ceremony on home-property returns.",
+    sourceVisits: ["Rosewood Hong Kong · Mar 2026", "Rosewood Hong Kong · Nov 2025"],
+    memberSnapshot: { memberSince: "2024", totalStays: 3, propertiesVisited: 2, loyaltyTier: "Rosewood Elite · Tier I" },
+    privacyState: "opted-in",
+  },
+  "marcus-okafor-london": {
+    guestName: "Marcus Okafor",
+    visitContext: "Member since 2021 · returning to home property (Rosewood London). Last stay was 4 weeks ago.",
+    accessibilityNeeds: [
+      "Ground-floor or elevator-adjacent — partial knee replacement Feb 2025, ongoing recovery",
+    ],
+    prepActions: [
+      "Do NOT announce his name at the entry — discretion preference",
+      "Holborn Dining Room back booth held if he dines tonight",
+      "Negroni stirred, not shaken — bar flag is live",
+      "No dairy — kitchen-wide flag",
+    ],
+    amenityReplenishment: [
+      { item: "Back booth at Holborn Dining Room with single low lamp", sourcedFrom: "Rosewood London · Dec 2025 — solo working dinner" },
+      { item: "Cornas (Rhône) by the glass primed at bar", sourcedFrom: "Rosewood London · Dec 2025 — clarified preference" },
+    ],
+    suggestedQuestions: [
+      { question: "Welcome back, sir. Would you like the Holborn Dining Room back booth this evening?", basedOn: "Pattern: solo working dinner setup across both London stays" },
+    ],
+    discretionFlags: [
+      "Never use his name at the entry. No public greeting.",
+    ],
+    emotionalNotes: "London is home. Knee recovery ongoing. Anniversary with Lola is July 8 — not relevant unless she joins.",
+    sourceVisits: ["Rosewood London · Apr 2026 (anniversary)", "Rosewood London · Dec 2025"],
+    memberSnapshot: { memberSince: "2021", totalStays: 4, propertiesVisited: 2, loyaltyTier: "Rosewood Elite · Tier II" },
+    privacyState: "opted-in",
+  },
 };
 
 export function cachedBriefKey(guestId: string, propertyId: string) {
