@@ -85,6 +85,8 @@ export default function StaffPage() {
   const [allNotes, setAllNotes] = useState<CapturedNote[]>([]);
   const [muted, setMuted] = useState(false);
   const [subtitle, setSubtitle] = useState<string | null>(null);
+  const [voiceCharacter, setVoiceCharacter] = useState<"sandy" | "hill">("sandy");
+  const hillHandoffShownRef = useRef(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const interimRef = useRef<string>("");
@@ -95,6 +97,86 @@ export default function StaffPage() {
     setComputing(false);
     setContext(null);
   }, [currentProperty]);
+
+  // restore voice character preference from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("sandy:voice-character");
+      if (stored === "hill" || stored === "sandy") setVoiceCharacter(stored);
+      if (localStorage.getItem("sandy:hill-introduced") === "1") {
+        hillHandoffShownRef.current = true;
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const switchVoice = async (next: "sandy" | "hill") => {
+    if (next === voiceCharacter) return;
+    setVoiceCharacter(next);
+    try {
+      localStorage.setItem("sandy:voice-character", next);
+    } catch {
+      // ignore
+    }
+
+    // First-time handoff: Sandy introduces Hill in Sandy's voice, then Hill says hi
+    if (next === "hill" && !hillHandoffShownRef.current) {
+      hillHandoffShownRef.current = true;
+      try {
+        localStorage.setItem("sandy:hill-introduced", "1");
+      } catch {
+        // ignore
+      }
+      try {
+        const sandyLine =
+          "If you'd prefer a different voice, my partner Hill is also at your service.";
+        const hillLine =
+          "Hello. I'm Hill. The institutional memory of Rosewood, in a different register.";
+        setSubtitle(`${sandyLine}\n\n${hillLine}`);
+
+        // Sandy speaks first (in her voice)
+        if (!muted) {
+          const sandyRes = await fetch("/api/synth", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: sandyLine, voiceStyle: "expressive", voice: "sandy" }),
+          });
+          const sandyType = sandyRes.headers.get("Content-Type") || "";
+          if (sandyType.startsWith("audio/")) {
+            const blob = await sandyRes.blob();
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+            await new Promise<void>((resolve) => {
+              audio.onended = () => {
+                URL.revokeObjectURL(url);
+                resolve();
+              };
+              audio.play().catch(() => resolve());
+            });
+          }
+
+          // Then Hill speaks (in his voice)
+          const hillRes = await fetch("/api/synth", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: hillLine, voiceStyle: "expressive", voice: "hill" }),
+          });
+          const hillType = hillRes.headers.get("Content-Type") || "";
+          if (hillType.startsWith("audio/")) {
+            const blob = await hillRes.blob();
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+            audio.onended = () => URL.revokeObjectURL(url);
+            await audio.play().catch(() => URL.revokeObjectURL(url));
+          }
+        }
+        setTimeout(() => setSubtitle(null), 22000);
+      } catch (err) {
+        console.warn("[hill-handoff] failed:", err);
+      }
+    }
+  };
 
   // restore last brief on mount so back/forward navigation doesn't blank the tablet
   useEffect(() => {
@@ -162,7 +244,7 @@ export default function StaffPage() {
       const res = await fetch("/api/whisper", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(context),
+        body: JSON.stringify({ ...context, voice: voiceCharacter }),
       });
 
       const contentType = res.headers.get("Content-Type") || "";
@@ -224,7 +306,7 @@ export default function StaffPage() {
       const res = await fetch("/api/synth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: line.text, voiceStyle: "warm" }),
+        body: JSON.stringify({ text: line.text, voiceStyle: "warm", voice: voiceCharacter }),
       });
       const contentType = res.headers.get("Content-Type") || "";
       if (contentType.startsWith("audio/")) {
@@ -282,7 +364,7 @@ export default function StaffPage() {
         const ackRes = await fetch("/api/synth", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: ack, voiceStyle: "ack" }),
+          body: JSON.stringify({ text: ack, voiceStyle: "ack", voice: voiceCharacter }),
         });
         const ackType = ackRes.headers.get("Content-Type") || "";
         if (ackType.startsWith("audio/")) {
@@ -421,7 +503,7 @@ export default function StaffPage() {
         >
           <div className="flex items-start gap-3">
             <span className="font-sans text-[9px] uppercase tracking-[0.3em] text-[var(--color-accent)] mt-1 whitespace-nowrap">
-              {muted ? "Sandy · subtitled" : "Sandy · speaking"}
+              {voiceCharacter === "hill" ? "Hill" : "Sandy"} · {muted ? "subtitled" : "speaking"}
             </span>
             <div className="flex-1">
               {subtitle.split("\n\n").map((line, i) => (
@@ -473,6 +555,16 @@ export default function StaffPage() {
           </div>
         </div>
         <div className="flex items-center gap-4 font-sans text-xs text-[var(--color-ink-faint)]">
+          <button
+            onClick={() => switchVoice(voiceCharacter === "sandy" ? "hill" : "sandy")}
+            className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)] hover:text-[var(--color-ink)] transition-colors"
+            title={`Currently ${voiceCharacter === "hill" ? "Hill" : "Sandy"} — click to switch`}
+          >
+            Voice ·{" "}
+            <span className="text-[var(--color-ink)] font-semibold">
+              {voiceCharacter === "hill" ? "Hill" : "Sandy"}
+            </span>
+          </button>
           <button
             onClick={toggleVoiceNote}
             className={`font-sans text-[10px] uppercase tracking-[0.3em] transition-colors ${

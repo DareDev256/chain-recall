@@ -9,7 +9,7 @@ const DEFAULT_VOICE_ID = "JBFqnCBsd6RMkjVDRZzb"; // George — British butler ti
 const DEFAULT_MODEL_ID = "eleven_turbo_v2_5";
 
 export async function POST(req: NextRequest) {
-  const { guestId, propertyId } = await req.json();
+  const { guestId, propertyId, voice } = await req.json();
   if (!guestId || !propertyId) {
     return Response.json(
       { error: "guestId and propertyId required" },
@@ -31,7 +31,9 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const voiceId = process.env.ELEVENLABS_VOICE_ID || DEFAULT_VOICE_ID;
+  const primaryVoiceId = process.env.ELEVENLABS_VOICE_ID || DEFAULT_VOICE_ID;
+  const hillVoiceId = process.env.ELEVENLABS_VOICE_ID_MALE || primaryVoiceId;
+  const voiceId = voice === "hill" || voice === "male" ? hillVoiceId : primaryVoiceId;
   const modelId = process.env.ELEVENLABS_MODEL_ID || DEFAULT_MODEL_ID;
 
   const upstream = await fetch(
