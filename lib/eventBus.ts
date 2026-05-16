@@ -2,7 +2,7 @@ import type { Brief } from "./types";
 
 export type ChainEvent =
   | { type: "computing"; guestId: string; propertyId: string }
-  | { type: "brief"; brief: Brief };
+  | { type: "brief"; brief: Brief; guestId: string; propertyId: string };
 
 type Listener = (event: ChainEvent) => void;
 

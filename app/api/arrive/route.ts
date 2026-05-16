@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   publish({ type: "computing", guestId, propertyId });
 
   const brief = await compose(guestId, propertyId);
-  publish({ type: "brief", brief });
+  publish({ type: "brief", brief, guestId, propertyId });
 
   return Response.json({ ok: true, brief });
 }

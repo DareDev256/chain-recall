@@ -3,11 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import type { Brief } from "@/lib/types";
 
+type Context = { guestId: string; propertyId: string };
+
 export default function StaffPage() {
   const [brief, setBrief] = useState<Brief | null>(null);
+  const [context, setContext] = useState<Context | null>(null);
   const [computing, setComputing] = useState(false);
   const [connected, setConnected] = useState(false);
   const [pulse, setPulse] = useState(false);
+  const [whispering, setWhispering] = useState(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
@@ -38,7 +42,7 @@ export default function StaffPage() {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sine";
-      osc.frequency.value = 880; // A5 — soft, attentive
+      osc.frequency.value = 880;
       gain.gain.setValueAtTime(0, now);
       gain.gain.linearRampToValueAtTime(0.08, now + 0.04);
       gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
@@ -51,6 +55,41 @@ export default function StaffPage() {
     }
   };
 
+  const whisper = async () => {
+    if (!context || whispering) return;
+    setWhispering(true);
+    try {
+      const res = await fetch("/api/whisper", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(context),
+      });
+
+      const contentType = res.headers.get("Content-Type") || "";
+
+      if (contentType.startsWith("audio/")) {
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        audio.onended = () => URL.revokeObjectURL(url);
+        await audio.play();
+      } else {
+        const data = await res.json();
+        if (data.script && typeof window.speechSynthesis !== "undefined") {
+          const utter = new SpeechSynthesisUtterance(data.script);
+          utter.rate = 0.95;
+          utter.pitch = 0.85;
+          utter.volume = 0.7;
+          window.speechSynthesis.speak(utter);
+        }
+      }
+    } catch (err) {
+      console.warn("[whisper] failed:", err);
+    } finally {
+      setTimeout(() => setWhispering(false), 1500);
+    }
+  };
+
   useEffect(() => {
     const es = new EventSource("/api/stream");
     es.onopen = () => setConnected(true);
@@ -60,11 +99,13 @@ export default function StaffPage() {
       if (data.type === "computing") {
         setComputing(true);
         setBrief(null);
+        setContext({ guestId: data.guestId, propertyId: data.propertyId });
       } else if (data.type === "brief") {
         setComputing(false);
         setPulse(true);
         setTimeout(() => setPulse(false), 1200);
         setBrief(data.brief);
+        setContext({ guestId: data.guestId, propertyId: data.propertyId });
         playChime();
       }
     };
@@ -81,11 +122,21 @@ export default function StaffPage() {
           <h1 className="font-serif text-3xl mt-1">Menlo Park · Sand Hill Road</h1>
         </div>
         <div className="flex items-center gap-4 font-sans text-xs text-[var(--color-ink-faint)]">
+          {brief && (
+            <button
+              onClick={whisper}
+              disabled={whispering}
+              className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-accent)] hover:text-[var(--color-ink)] transition-colors disabled:opacity-50"
+            >
+              {whispering ? "Whispering…" : "Whisper"}
+            </button>
+          )}
           {(brief || computing) && (
             <button
               onClick={() => {
                 setBrief(null);
                 setComputing(false);
+                setContext(null);
               }}
               className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)] hover:text-[var(--color-ink)] transition-colors"
             >
