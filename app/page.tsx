@@ -69,13 +69,16 @@ export default function Home() {
           entered ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-md scale-95 pointer-events-none"
         }`}
       >
-        <p className="font-sans text-xs uppercase tracking-[0.3em] text-[var(--color-ink-faint)]">
-          {BRAND.productName} · {BRAND.deploymentChain}
+        <img
+          src={BRAND.logo}
+          alt={BRAND.productName}
+          className="h-14 w-auto"
+        />
+        <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)] mt-3">
+          · {BRAND.deploymentChain} ·
         </p>
 
-        <div className="mt-3 h-px w-12 bg-[var(--color-accent)] opacity-70" />
-
-        <h2 className="font-serif text-7xl md:text-8xl font-normal leading-[0.95] tracking-tight max-w-4xl mt-8">
+        <h2 className="font-serif text-7xl md:text-8xl font-normal leading-[0.95] tracking-tight max-w-4xl mt-10">
           Recognition,<br />without asking.
         </h2>
 
