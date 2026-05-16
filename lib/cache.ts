@@ -74,6 +74,13 @@ export const CACHED_BRIEFS: Record<string, Brief> = {
       "Rosewood Hong Kong · Nov 2025",
       "Rosewood London · Jan 2026",
     ],
+    memberSnapshot: {
+      memberSince: "2024",
+      totalStays: 3,
+      propertiesVisited: 2,
+      loyaltyTier: "Rosewood Elite · Tier I",
+    },
+    privacyState: "opted-in",
   },
   "marcus-okafor-sand-hill": {
     guestName: "Marcus Okafor",
@@ -145,6 +152,13 @@ export const CACHED_BRIEFS: Record<string, Brief> = {
       "Rosewood Hong Kong · Feb 2026 (Manor Club tier)",
       "Rosewood Hong Kong · Aug 2025",
     ],
+    memberSnapshot: {
+      memberSince: "2021",
+      totalStays: 4,
+      propertiesVisited: 2,
+      loyaltyTier: "Rosewood Elite · Tier II",
+    },
+    privacyState: "opted-in",
   },
   "priya-sharma-sand-hill": {
     guestName: "Priya Sharma",
@@ -208,6 +222,13 @@ export const CACHED_BRIEFS: Record<string, Brief> = {
       "Rosewood Hong Kong · Feb 2026 (investor dinner)",
       "Rosewood Hong Kong · Oct 2025 (first visit, working lunch)",
     ],
+    memberSnapshot: {
+      memberSince: "2025",
+      totalStays: 2,
+      propertiesVisited: 1,
+      loyaltyTier: "Rosewood Elite · Tier I",
+    },
+    privacyState: "opted-in",
   },
   "daniel-edson-sand-hill": {
     guestName: "Daniel Edson",
@@ -299,6 +320,55 @@ export const CACHED_BRIEFS: Record<string, Brief> = {
       "Rosewood London · Apr 2026 (solo working stay)",
       "Rosewood London · Dec 2025 (Grand Manor House Wing, family)",
       "Rosewood Hong Kong · Nov 2025 (Silky Glow facial)",
+    ],
+    memberSnapshot: {
+      memberSince: "2022",
+      totalStays: 7,
+      propertiesVisited: 2,
+      loyaltyTier: "Rosewood Elite · Tier II",
+    },
+    privacyState: "opted-in",
+  },
+  "elena-vasquez-sand-hill": {
+    guestName: "Elena Vasquez",
+    visitContext:
+      "Member since 2023. First visit to Rosewood Sand Hill. Opted out of cross-property recognition March 2026.",
+    memberSnapshot: {
+      memberSince: "2023",
+      totalStays: 3,
+      propertiesVisited: 2,
+      loyaltyTier: "Rosewood Elite · Tier I",
+    },
+    privacyState: "opted-out",
+    privacyNote:
+      "Member exercised cross-property data opt-out via guest portal on 01 Mar 2026 (GDPR Art. 17 / CCPA §1798.105). Prior stay records remain in OPERA for contractual purposes but are EXCLUDED from this brief. Sandy did not query her history.",
+    accessibilityNeeds: [],
+    prepActions: [
+      "Standard check-in welcome packet ready",
+      "Room key + Sand Hill property orientation card",
+      "Express check-in option available per Member Terms — offer once, do not press",
+      "Wine + small bites in the lobby lounge if she'd like to settle before the villa",
+    ],
+    amenityReplenishment: [],
+    suggestedQuestions: [
+      {
+        question:
+          "Welcome to Rosewood Sand Hill, Ms. Vasquez. Is there anything you'd like us to know about this stay?",
+        basedOn:
+          "Privacy opt-out — re-onboarding happens at the guest's pace, on her terms",
+        loggedBy: "Front desk protocol · all properties · effective 01 Mar 2026",
+      },
+    ],
+    localSuggestions: [],
+    discretionFlags: [
+      "Do NOT reference prior Rosewood London (Sep 2025) or Hong Kong (Feb 2026, Jul 2025) stays. Cross-property recognition is explicitly opted out.",
+      "If she volunteers a preference or mentions a prior stay, treat it as her invitation. Confirm we can re-add her to cross-property recognition via the portal if she wishes.",
+      "No surprise welcome amenities. Any in-room placement requires her explicit opt-in conversation today.",
+    ],
+    emotionalNotes:
+      "Privacy preference is part of how she experiences luxury. The chain earned her membership; the relationship earns her data, on her timeline. When she wants to share, she will. Until then, we earn the relationship.",
+    sourceVisits: [
+      "Member profile · contractual visit confirmation only",
     ],
   },
 };

@@ -78,9 +78,21 @@ export type LocalSuggestion = {
   loggedBy?: string;
 };
 
+export type PrivacyState = "opted-in" | "opted-out";
+
+export type MemberSnapshot = {
+  memberSince: string;
+  totalStays: number;
+  propertiesVisited: number;
+  loyaltyTier?: string;
+};
+
 export type Brief = {
   guestName: string;
   visitContext: string;
+  memberSnapshot?: MemberSnapshot;
+  privacyState?: PrivacyState;
+  privacyNote?: string;
   arrivalIntel?: ArrivalIntel;
   accessibilityNeeds: string[];
   prepActions: string[];

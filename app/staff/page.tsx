@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import type { Brief, PropertyId } from "@/lib/types";
 import { LiveEta } from "./LiveEta";
 import { ArrivalMap } from "./ArrivalMap";
@@ -55,12 +54,22 @@ const PROPERTY_LABEL: Record<PropertyId, { eyebrow: string; heading: string; sho
 const PROPERTY_ORDER: PropertyId[] = ["sand-hill", "hong-kong", "london"];
 
 export default function StaffPage() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const currentProperty: PropertyId = useMemo(() => {
-    const p = searchParams.get("property") as PropertyId | null;
-    return p && PROPERTY_LABEL[p] ? p : "sand-hill";
-  }, [searchParams]);
+  const [currentProperty, setCurrentProperty] = useState<PropertyId>("sand-hill");
+
+  // read property from URL on mount (sidesteps Next 16 useSearchParams Suspense
+  // requirement; same UX, no static-prerender error)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const p = params.get("property") as PropertyId | null;
+    if (p && PROPERTY_LABEL[p]) setCurrentProperty(p);
+  }, []);
+
+  const switchProperty = (id: PropertyId) => {
+    setCurrentProperty(id);
+    const url = new URL(window.location.href);
+    url.searchParams.set("property", id);
+    window.history.replaceState({}, "", url.toString());
+  };
 
   const [brief, setBrief] = useState<Brief | null>(null);
   const [context, setContext] = useState<Context | null>(null);
@@ -307,7 +316,7 @@ export default function StaffPage() {
             {PROPERTY_ORDER.map((id) => (
               <button
                 key={id}
-                onClick={() => router.replace(`/staff?property=${id}`)}
+                onClick={() => switchProperty(id)}
                 className={`font-sans text-[10px] uppercase tracking-[0.3em] transition-colors ${
                   currentProperty === id
                     ? "text-[var(--color-ink)] underline underline-offset-[6px] decoration-[var(--color-accent)]"
@@ -421,6 +430,33 @@ export default function StaffPage() {
           <p className="font-sans text-sm text-[var(--color-ink-soft)] mt-4 leading-relaxed max-w-2xl">
             {brief.visitContext}
           </p>
+
+          {brief.memberSnapshot && (
+            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-1 font-sans text-[11px] uppercase tracking-[0.25em] text-[var(--color-ink-faint)]">
+              <span>Member since {brief.memberSnapshot.memberSince}</span>
+              <span>· {brief.memberSnapshot.totalStays} stays</span>
+              <span>· {brief.memberSnapshot.propertiesVisited} properties</span>
+              {brief.memberSnapshot.loyaltyTier && (
+                <span>· {brief.memberSnapshot.loyaltyTier}</span>
+              )}
+            </div>
+          )}
+
+          {brief.privacyState === "opted-out" && (
+            <section className="mt-8 border-l-2 border-[var(--color-accent)] py-4 pl-6 max-w-3xl bg-[var(--color-cream-tint)]">
+              <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-accent)] mb-2 font-semibold">
+                Privacy · cross-property recognition opted out
+              </p>
+              <p className="font-serif text-base leading-snug text-[var(--color-ink)] mb-2">
+                Sandy did not retrieve this member&rsquo;s history. Treat this as a first conversation — the relationship earns the data, on her timeline.
+              </p>
+              {brief.privacyNote && (
+                <p className="font-sans text-[11px] text-[var(--color-ink-faint)] italic leading-snug">
+                  {brief.privacyNote}
+                </p>
+              )}
+            </section>
+          )}
 
           {brief.arrivalIntel && (
             <section className="mt-8 border border-[var(--color-rule)] bg-[var(--color-cream-tint)] p-6 max-w-3xl">

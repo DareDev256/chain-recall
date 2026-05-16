@@ -23,6 +23,11 @@ const GUESTS = [
     name: "Daniel Edson",
     note: "London regular · just landed SFO from Tel Aviv · 7h flight",
   },
+  {
+    id: "elena-vasquez",
+    name: "Elena Vasquez",
+    note: "Mexico City · privacy opt-out · first Sand Hill visit",
+  },
 ];
 
 const PROPERTIES = [

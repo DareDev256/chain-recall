@@ -277,6 +277,21 @@ export const GUESTS: GuestProfile[] = [
       { label: "business partner", name: "Avi Mizrahi", detail: "separate adjacent rooms when traveling together" },
     ],
   },
+  {
+    // Privacy opt-out demo guest. By design, this profile is intentionally
+    // sparse: when a member opts out, we keep only contractual/membership
+    // facts and explicitly do NOT surface prior cross-property history.
+    id: "elena-vasquez",
+    name: "Elena Vasquez",
+    memberSince: "2023",
+    homeCity: "Mexico City",
+    visits: [],
+    preferences: {
+      dietary: [],
+      allergies: [],
+    },
+    relationships: [],
+  },
 ];
 
 export function getGuest(id: string): GuestProfile | undefined {
