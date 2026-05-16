@@ -67,7 +67,7 @@ const VOICE_PRESETS: Record<string, {
  * VOICE_PRESETS above for the available registers. Defaults to neutral.
  */
 export async function POST(req: NextRequest) {
-  const { text, voiceStyle } = await req.json();
+  const { text, voiceStyle, voice } = await req.json();
   if (!text || typeof text !== "string") {
     return Response.json({ error: "text required" }, { status: 400 });
   }
@@ -85,8 +85,17 @@ export async function POST(req: NextRequest) {
     (typeof voiceStyle === "string" && VOICE_PRESETS[voiceStyle]) ||
     VOICE_PRESETS.neutral;
 
-  const voiceId = process.env.ELEVENLABS_VOICE_ID || DEFAULT_VOICE_ID;
-  const modelId = process.env.ELEVENLABS_MODEL_ID || DEFAULT_MODEL_ID;
+  // Voice selection — supports "male" alternate when ELEVENLABS_VOICE_ID_MALE set
+  const primaryVoiceId = process.env.ELEVENLABS_VOICE_ID || DEFAULT_VOICE_ID;
+  const maleVoiceId = process.env.ELEVENLABS_VOICE_ID_MALE || primaryVoiceId;
+  const voiceId = voice === "male" ? maleVoiceId : primaryVoiceId;
+
+  // Model selection — multilingual_v2 handles non-Latin scripts (Hebrew,
+  // Mandarin, Hindi, etc.) much better than Turbo. Auto-pick multilingual
+  // when the request is for the "warm" greeting register where multilingual
+  // delivery matters most.
+  const defaultModel = process.env.ELEVENLABS_MODEL_ID || DEFAULT_MODEL_ID;
+  const modelId = voiceStyle === "warm" ? "eleven_multilingual_v2" : defaultModel;
 
   const upstream = await fetch(
     `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,

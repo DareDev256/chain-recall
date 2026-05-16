@@ -5,6 +5,14 @@ export const CACHED_BRIEFS: Record<string, Brief> = {
     guestName: "Mei Lin Chen",
     visitContext:
       "Member since 2024. First-ever visit to Rosewood Sand Hill. Regular at Rosewood Hong Kong (2 stays), London once (Jan 2026).",
+    arrivalIntel: {
+      expectedAt: "ETA 16:20 today (Sat 16 May) — bell concierge holding at the portico",
+      flightContext:
+        "Cathay Pacific CX870 — Hong Kong direct. 13h Pacific crossing. Landed SFO 14:55.",
+      baggageNote: "1 checked bag — bell concierge meeting at portico, escorted to villa",
+      energyState:
+        "13h flight + 15h time zone delta. Chamomile + kettle pre-stocked bedside. Defer formal welcome if she reads as tired; soft cream tea service in lobby if she'd rather settle before the villa.",
+    },
     accessibilityNeeds: [],
     prepActions: [
       "Room at 19°C — confirmed across both Hong Kong stays",
@@ -102,6 +110,14 @@ export const CACHED_BRIEFS: Record<string, Brief> = {
     guestName: "Marcus Okafor",
     visitContext:
       "Member since 2021. First-ever visit to Rosewood Sand Hill. Regular at Rosewood London (2 stays), Hong Kong twice (Manor Club tier).",
+    arrivalIntel: {
+      expectedAt: "ETA 17:15 today (Sat 16 May) — bell concierge holding, ground-floor villa pre-assigned",
+      flightContext:
+        "United UA901 — London Heathrow direct. 11h flight + 8h time zone delta. Landed SFO 15:48.",
+      baggageNote: "2 checked bags — bell concierge meeting at portico; ground-floor villa per knee-recovery flag",
+      energyState:
+        "11h flight. Solo working trip — Madera back booth held for 7pm if he extends. Negroni-stirred bar profile is live.",
+    },
     accessibilityNeeds: [
       "Ground-floor villa or elevator-adjacent room — partial knee replacement Feb 2025, ongoing recovery (London profile)",
     ],
@@ -197,6 +213,14 @@ export const CACHED_BRIEFS: Record<string, Brief> = {
     guestName: "Priya Sharma",
     visitContext:
       "Member since 2025. First-ever visit to Rosewood Sand Hill. Two prior visits, both Rosewood Hong Kong.",
+    arrivalIntel: {
+      expectedAt: "ETA 16:55 today (Sat 16 May) — bell concierge holding",
+      flightContext:
+        "Singapore Airlines SQ32 — Singapore via Narita. 17h total travel. Landed SFO 15:30.",
+      baggageNote: "2 checked bags — bell concierge meeting at portico; investor dinner tonight per Devika",
+      energyState:
+        "17h flight + 15h time zone delta. Lamps-only workspace pre-set in villa, ginger water in fridge. Migraine-trigger fluorescents OFF throughout her path.",
+    },
     accessibilityNeeds: [
       "No overhead fluorescents in seating areas — confirmed migraine trigger (Rosewood Hong Kong, Oct 2025)",
     ],
