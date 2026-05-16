@@ -132,16 +132,31 @@ export default function Home() {
 
         <div className="mt-16 flex flex-col sm:flex-row gap-4 font-sans text-sm">
           <Link
-            href="/staff"
-            className="px-8 py-3 border border-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-cream)] transition-colors"
+            href="/console"
+            className="px-8 py-3 border border-[var(--color-ink)] bg-[var(--color-ink)] text-[var(--color-cream)] hover:bg-[var(--color-accent)] hover:border-[var(--color-accent)] transition-colors"
           >
-            Staff Tablet · Sand Hill
+            Manager Console
+            <span className="block text-[10px] font-sans uppercase tracking-[0.25em] text-[var(--color-cream)]/70 mt-0.5">
+              Both views, side by side
+            </span>
+          </Link>
+          <Link
+            href="/staff"
+            className="px-8 py-3 border border-[var(--color-rule)] text-[var(--color-ink-soft)] hover:border-[var(--color-ink)] hover:text-[var(--color-ink)] transition-colors"
+          >
+            Staff Tablet
+            <span className="block text-[10px] font-sans uppercase tracking-[0.25em] text-[var(--color-ink-faint)] mt-0.5">
+              Front-of-house view
+            </span>
           </Link>
           <Link
             href="/arrive"
             className="px-8 py-3 border border-[var(--color-rule)] text-[var(--color-ink-soft)] hover:border-[var(--color-ink)] hover:text-[var(--color-ink)] transition-colors"
           >
             Member Arrival
+            <span className="block text-[10px] font-sans uppercase tracking-[0.25em] text-[var(--color-ink-faint)] mt-0.5">
+              QR target — guest side
+            </span>
           </Link>
         </div>
       </section>

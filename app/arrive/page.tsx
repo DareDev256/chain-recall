@@ -56,12 +56,18 @@ export default function ArrivePage() {
   return (
     <main className="flex-1 flex flex-col items-center justify-center px-8 py-16 max-w-2xl mx-auto w-full">
       <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)] mb-2">
-        Member Arrival Trigger
+        Member Arrival Trigger · Guest Side
       </p>
       <h1 className="font-serif text-4xl mb-2">Walk in.</h1>
-      <p className="font-sans text-sm text-[var(--color-ink-soft)] text-center max-w-md">
-        Production: BLE beacon at entry, license-plate recognition at valet, app geofence.
-        Demo: tap your name.
+      <p className="font-sans text-sm text-[var(--color-ink-soft)] text-center max-w-lg leading-relaxed">
+        This is the surface a member touches before arrival. The guest never sees AI.
+        <br /><br />
+        <span className="text-[var(--color-ink-faint)] italic">
+          Production: BLE beacon at property entry, license-plate recognition at valet,
+          app geofence, or QR scan at the airport lounge. Push notifications + live activity
+          remind the member &amp; prep front-of-house. Demo: tap a member&rsquo;s name to fire the
+          same event.
+        </span>
       </p>
 
       <div className="mt-10 w-full">
