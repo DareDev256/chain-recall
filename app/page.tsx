@@ -98,6 +98,24 @@ export default function Home() {
           stage === "interior" ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-md scale-95 pointer-events-none"
         }`}
       >
+        {/* Ambient Rosewood reel — muted + looped, mounts only on interior stage */}
+        {stage === "interior" && (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            aria-hidden
+            className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-25"
+            src="/mashup/rosewood-trio-30s.mp4"
+          />
+        )}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-[var(--color-cream)] via-[var(--color-cream)]/55 to-[var(--color-cream)]"
+        />
+
         <img
           src={BRAND.logo}
           alt={BRAND.productName}
