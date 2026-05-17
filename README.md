@@ -1,10 +1,14 @@
-# Sandy Chain-Recall — chain-recall
+# Sandy Chain-Recall
 
 > Recognition, without asking.
 
+**🌐 Live demo:** [chain-recall.vercel.app](https://chain-recall.vercel.app) · **🖥 Manager Console:** [chain-recall.vercel.app/console](https://chain-recall.vercel.app/console) · **📚 Study deck:** [chain-recall.vercel.app/study](https://chain-recall.vercel.app/study)
+
 The silent institutional memory of a luxury hotel chain. When a member walks into ANY property — even one they've never visited — front-of-house staff is briefed on who they are, what they prefer, and how to treat them. The AI is invisible to the guest. Staff is just magically attentive.
 
-**Built at the SF Anthropic Hackathon · May 2026 · by James Olusoga & Joshua Dare.**
+**Built in 8 hours at the SF Anthropic Hackathon · May 16, 2026 · by James Olusoga (DareDev256) & Joshua Dare (Waleee7).**
+
+**Partner technologies:** Anthropic Claude Opus 4.7 (tool use) · ElevenLabs Turbo + Multilingual v2 (custom Sandy & Hill voices) · Vercel · Next.js 16 · TypeScript · Server-Sent Events. Mock Oracle OPERA adapter at the integration boundary (production: Hapi event stream).
 
 ---
 
