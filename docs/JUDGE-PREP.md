@@ -123,7 +123,7 @@ This doc is your safety net. Read it once before walking into the room.
 > "Today: in-memory seed corpus baked into `lib/data.ts` (5 demo guests). Production: Postgres event journal mirroring OPERA, hydrated via Hapi's event stream. pgvector for semantic search over memory observations. The data shape we use mirrors what OPERA already stores today."
 
 **Q: What's the GTM motion?**
-> "Three paths in `OUTREACH.md`. (1) Direct to Rosewood corp IT / guest-experience leadership. (2) Hapi as the channel partner — Rosewood is already their customer, we're the natural consumer of their stream. (3) Wedge deployment at one Rosewood flagship — 60-day pilot, measure NPS lift and amenity-replenishment hit rate."
+> "Three paths in the local outreach notes. (1) Direct to Rosewood corp IT / guest-experience leadership. (2) Hapi as the channel partner — Rosewood is already their customer, we're the natural consumer of their stream. (3) Wedge deployment at one Rosewood flagship — 60-day pilot, measure NPS lift and amenity-replenishment hit rate."
 
 ### Tier 3 — possible, prep just in case
 

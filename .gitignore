@@ -49,3 +49,6 @@ public/properties/hong-kong/videos/RWHKG_Video_Facilities_Wellness_Asaya-Main-Vi
 # scrape intermediates — bulky, reproducible
 scripts/scrape/raw/
 scripts/scrape/models/
+
+# local-only: outreach drafts + exec research, deliberately not public
+.private/

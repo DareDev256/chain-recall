@@ -271,6 +271,6 @@ Ranked by ROI:
 - [ ] **Test property switcher** — click HK, click London, click Sand Hill — confirm each shows "All quiet"
 - [ ] **Test Reset** — confirm the brief clears
 - [ ] **Record the 90-second demo** per `SHOTLIST.md`
-- [ ] **Send Philip Meyer the first outreach DM** post-pitch — `OUTREACH.md` has it ready
+- [ ] **Open the first operator conversation** post-pitch (outreach drafts kept locally, not in this repo)
 
 That's it. Don't add more code. Don't redesign anything.

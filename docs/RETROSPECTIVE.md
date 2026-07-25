@@ -31,7 +31,7 @@ Honest pros / cons / known limitations / what's next. Written after the hackatho
 
 ### Pitch artifacts
 - 8-slide PITCH-DECK.md ready to paste into Google Slides
-- 5 paste-ready exec outreach DMs + emails in OUTREACH.md
+- 5 paste-ready exec outreach DMs + emails (kept locally, not in this repo)
 - 90-second SHOTLIST.md with break-glass procedures
 - ARCHITECTURE.md with the current → v1 → scale path
 - COSTS.md with the verified economics
