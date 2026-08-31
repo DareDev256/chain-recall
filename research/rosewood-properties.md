@@ -1,7 +1,9 @@
-# Rosewood Properties — Deep Scrape for Demo Seed Data
+# Rosewood Properties — Sourced Notes for the Demo Seed Corpus
 
 Research scope: Rosewood Hong Kong, Rosewood Sand Hill (Menlo Park, CA), Rosewood London.
-Purpose: Verifiable, scrape-able facts for the Chain Recall AI memory layer hackathon demo.
+Purpose: publicly verifiable facts, cited inline, to make the Chain Recall demo corpus
+plausible. Text notes only. No images or other assets from any of these sites are stored in
+this repository. See NOTICE.md.
 
 All facts below are sourced from `rosewoodhotels.com` direct pages, official Rosewood press kits/fact sheets, the property's own dining sub-brand sites, or named secondary sources (Wikipedia, Robb Report, Hospitality Design, Hotel Management, Cathay magazine). Anything not surfaced is marked `[not found on official site]`.
 

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 360" width="540" height="360" role="img" aria-label="Placeholder property plate">
+  <rect width="540" height="360" fill="#faf7f2"/>
+  <rect x="0" y="0" width="540" height="360" fill="#f3ede2" opacity="0.55"/>
+  <rect x="16" y="16" width="508" height="328" fill="none" stroke="#e5e0d8" stroke-width="1"/>
+  
+    <g stroke="#6b5b3e" stroke-width="1.6" fill="none" opacity="0.85">
+      <path d="M132 302 L132 176 L204 176 L204 302"/>
+      <path d="M132 176 L168 138 L204 176"/>
+      <path d="M228 302 L228 158 L336 158 L336 302"/>
+      <path d="M252 302 L252 206 L282 206 L282 302"/>
+      <path d="M300 302 L300 206 L324 206 L324 302"/>
+      <path d="M360 302 L360 118 L392 118 L392 302"/>
+    </g>
+    <path d="M60 302 L480 302" stroke="#1a1a1a" stroke-width="1" opacity="0.35"/>
+  <text x="32" y="52" font-family="Inter, system-ui, sans-serif" font-size="11" letter-spacing="3" fill="#8a8a8a">PLACEHOLDER</text>
+  <text x="32" y="336" font-family="Inter, system-ui, sans-serif" font-size="10" letter-spacing="2" fill="#8a8a8a">Property plate 03</text>
+</svg>

@@ -182,17 +182,29 @@ export default function Home() {
           stage === "rosewood" ? "opacity-100" : "opacity-0 blur-md scale-105 pointer-events-none"
         }`}
       >
-        <img
-          src="/brand/rosewood-mark.jpg"
-          alt="Rosewood Hotels & Resorts"
-          className="w-44 h-44 md:w-56 md:h-56 object-contain"
+        {/*
+          The chain is named in text only. No hotel-chain logo, monogram or
+          photography is redistributed by this repository.
+        */}
+        <div
+          className="flex h-44 w-44 items-center justify-center border border-[var(--color-rule)] md:h-56 md:w-56"
           style={{ animation: "sandy-emerge 900ms ease-out 100ms both" }}
-        />
+        >
+          <span className="font-serif text-5xl italic text-[var(--color-ink-soft)] md:text-6xl">
+            R
+          </span>
+        </div>
         <p
           className="font-sans text-[10px] uppercase tracking-[0.4em] text-[var(--color-ink-faint)] mt-10"
           style={{ animation: "sandy-emerge 700ms ease-out 1000ms both" }}
         >
           Rosewood Hotels &amp; Resorts
+        </p>
+        <p
+          className="font-sans text-[9px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)] mt-4 max-w-md leading-relaxed"
+          style={{ animation: "sandy-emerge 700ms ease-out 1400ms both" }}
+        >
+          Illustrative target chain · independent prototype · not affiliated
         </p>
       </section>
 
@@ -248,19 +260,11 @@ export default function Home() {
           stage === "interior" ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-md scale-95 pointer-events-none"
         }`}
       >
-        {/* Ambient Rosewood reel — muted + looped, mounts only on interior stage */}
-        {stage === "interior" && (
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            aria-hidden
-            className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-25"
-            src="/mashup/rosewood-trio-30s.mp4"
-          />
-        )}
+        {/*
+          The ambient reel that used to sit here was cut from the chain's own
+          brand video and is not ours to redistribute, so it is gone. The
+          gradient wash below is the documented empty state.
+        */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-[var(--color-cream)] via-[var(--color-cream)]/55 to-[var(--color-cream)]"

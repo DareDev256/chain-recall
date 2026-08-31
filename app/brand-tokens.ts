@@ -15,10 +15,15 @@ export const BRAND = {
   logo: "/brand/logo.svg",
 };
 
+/**
+ * Property plates are GENERATED PLACEHOLDERS, not photographs.
+ * No hotel-chain photography ships in this repository. If you fork this and
+ * want real imagery, supply your own licensed files and repoint these paths.
+ */
 export const PROPERTY_PLATES = {
-  "hong-kong": "/brand/property-hong-kong.jpg",
-  "sand-hill": "/brand/property-sand-hill.jpg",
-  london: "/brand/property-london.jpg",
+  "hong-kong": "/brand/plates/hong-kong.svg",
+  "sand-hill": "/brand/plates/sand-hill.svg",
+  london: "/brand/plates/london.svg",
 };
 
 export const PALETTE = {
