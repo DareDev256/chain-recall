@@ -209,7 +209,7 @@ Staff clicks "Voice Note" → `SpeechRecognition` starts listening → on each s
 ## Data layer
 
 ### Today: in-memory seed corpus
-`lib/data.ts` — four guests, three properties, hand-tuned visit history with `amenitiesUsed` observations per visit. About 350 lines of structured TypeScript.
+`lib/data.ts` — five guests, three properties, hand-tuned visit history with `amenitiesUsed` observations per visit. About 350 lines of structured TypeScript.
 
 ### Wifi parachute: cached briefs
 `lib/cache.ts` — pre-composed Brief objects for all 4 demo guests at Sand Hill. If Claude is slow or absent, the composer falls back to the cache silently. The judge cannot tell the difference.
