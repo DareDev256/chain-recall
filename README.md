@@ -222,7 +222,7 @@ chain-recall/
 │   └── globals.css               Quiet-luxury color tokens
 ├── lib/
 │   ├── compose.ts                Claude composer with tool use + cache fallback
-│   ├── data.ts                   Seed corpus — 4 guests, 3 Rosewood properties
+│   ├── data.ts                   Seed corpus — 5 guests, 3 Rosewood properties
 │   ├── cache.ts                  Hand-tuned briefs (wifi parachute)
 │   ├── eventBus.ts               In-memory pub/sub for SSE
 │   ├── sources/opera.ts          Oracle OPERA mock adapter (production: OHIP)
