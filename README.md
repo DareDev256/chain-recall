@@ -16,7 +16,7 @@ The silent institutional memory of a luxury hotel chain. When a member walks int
 
 > Your luxury hotel chain already pays for Oracle OPERA. Your front desk already enters every preference, allergy, complaint, amenity request. You are simply not using that data at the moment of arrival. **Sandy Chain-Recall is the AI layer that unlocks the data you already own.**
 
-We demo it deployed against the chain we'd target first: **Rosewood Hotels & Resorts** — 38 properties, 23 countries, all OPERA-backed via Hapi.
+We demo it deployed against the chain we'd target first: **Rosewood Hotels & Resorts**, 38 properties across 23 countries, all OPERA-backed via Hapi. Figures and their sources are in [`research/rosewood.md`](research/rosewood.md).
 
 Three real Rosewood properties anchor the demo:
 - **Rosewood Hong Kong** · Tsim Sha Tsui · Manor Club, HENRY, DarkSide, Asaya by Guerlain
@@ -92,7 +92,7 @@ If the Claude API errors or takes >6s, we fall back to a hand-tuned cached brief
 
 | Signal | Why it matters |
 |---|---|
-| 38 hotels, 23 countries, 21+ in pipeline | Massive deployment surface; new-property cold-start is a real pain point |
+| 38 hotels, 23 countries, 21+ in pipeline ([source](research/rosewood.md#6-pitch-ready-facts-cite-ready): Rosewood corporate factsheet 2025 plus the Wikipedia property list) | Massive deployment surface; new-property cold-start is a real pain point |
 | Named Hapi customer (Hapi streams OPERA events to cloud) | Confirmed OPERA-native infrastructure |
 | Sonia Cheng publicly uses "predictive analytics," "knows you before you ask," "relationship hospitality" | The CEO is asking for this out loud |
 | Rosewood Elite is benefit-based, not points-based — staff knowledge IS the loyalty product | Sandy Chain-Recall is the missing infrastructure for the loyalty program they already market |
@@ -215,7 +215,7 @@ chain-recall/
 │   │   ├── arrive/route.ts       POST: publish events, run composer
 │   │   ├── stream/route.ts       GET:  SSE feed for the staff tablet
 │   │   └── whisper/route.ts      POST: ElevenLabs / SpeechSynthesis fallback
-│   ├── arrive/page.tsx           QR target — 4 guests, 3 properties
+│   ├── arrive/page.tsx           QR target — 5 guests, 3 properties
 │   ├── staff/page.tsx            Tablet UI — full brief render, Whisper, Reset
 │   ├── page.tsx                  Title card (Josh's lane)
 │   ├── brand-tokens.ts           Brand palette + chain name (Josh's lane)
