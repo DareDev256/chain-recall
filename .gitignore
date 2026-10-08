@@ -52,3 +52,8 @@ scripts/scrape/models/
 
 # local-only: outreach drafts + exec research, deliberately not public
 .private/
+
+# Hackathon prep (judge Q&A, pitch, study sheet): kept on disk, never published (2026-10-08)
+docs/STUDY-SHEET-JOSH.md
+docs/JUDGE-PREP.md
+docs/PITCH-DECK.md
