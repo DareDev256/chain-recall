@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Presented by The Dare's</title>
+<style>
+  :root {
+    --cream: #f4ede1;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --ink-faint: #9c9c9c;
+    --accent: #9b8862;
+    --rule: #d6cdbd;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Georgia', 'Times New Roman', serif;
+    overflow: hidden;
+  }
+  /* Use this body for fullscreen screen-capture at 1920x1080 */
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .card {
+    width: 1200px;
+    max-width: 90vw;
+    padding: 80px 60px;
+    /* Subtle paper grain via radial overlay */
+    position: relative;
+  }
+  .card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 60%, rgba(0,0,0,0.04) 100%);
+    pointer-events: none;
+  }
+  .kicker {
+    font-family: 'Inter', 'Helvetica', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.42em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-bottom: 56px;
+    animation: emerge 700ms ease-out 200ms both;
+  }
+  .label {
+    font-family: 'Inter', 'Helvetica', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    animation: emerge 700ms ease-out 500ms both;
+  }
+  h1 {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: clamp(72px, 12vw, 168px);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 0.92;
+    color: var(--ink);
+    margin-bottom: 32px;
+    animation: rise 900ms ease-out 800ms both;
+  }
+  .rule {
+    width: 80px;
+    height: 1px;
+    background: var(--accent);
+    margin: 0 auto 32px;
+    transform-origin: center;
+    animation: rule 700ms ease-out 1500ms both;
+  }
+  .names {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 28px;
+    font-style: italic;
+    color: var(--ink-soft);
+    letter-spacing: 0.05em;
+    animation: emerge 700ms ease-out 1900ms both;
+  }
+  .names span {
+    display: inline-block;
+    margin: 0 12px;
+  }
+  .names .sep {
+    color: var(--accent);
+    font-style: normal;
+    margin: 0 8px;
+  }
+  .footer {
+    position: absolute;
+    bottom: 56px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Inter', 'Helvetica', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    animation: emerge 700ms ease-out 2400ms both;
+  }
+  @keyframes emerge {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(24px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes rule {
+    from { transform: scaleX(0); opacity: 0; }
+    to { transform: scaleX(1); opacity: 1; }
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="kicker">Sandy · Chain-Recall</div>
+    <div class="label">Presented by</div>
+    <h1>The&nbsp;Dare's</h1>
+    <div class="rule"></div>
+    <div class="names">
+      <span>James</span><span class="sep">·</span><span>Joshua</span>
+    </div>
+    <div class="footer">Sat May 16 · Rosewood Sand Hill · Hospitality 2030</div>
+  </div>
+</body>
+</html>

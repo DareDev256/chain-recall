@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <!-- Cream background matching app brand -->
+  <rect width="1920" height="1080" fill="#f4ede1"/>
+
+  <!-- ===== CENTER STACK ===== -->
+  <!-- Kicker -->
+  <text x="960" y="430" font-family="'Helvetica Neue', Arial, sans-serif"
+        font-size="20" font-weight="500" fill="#9c9c9c"
+        letter-spacing="7" text-anchor="middle">SAT MAY 16 · ROSEWOOD SAND HILL</text>
+  <!-- Title (italic serif) -->
+  <text x="960" y="540" font-family="'Georgia', 'Times New Roman', serif"
+        font-size="92" font-weight="400" font-style="italic" fill="#1a1a1a"
+        text-anchor="middle">Hospitality 2030</text>
+  <!-- Subtitle gold -->
+  <text x="960" y="600" font-family="'Helvetica Neue', Arial, sans-serif"
+        font-size="16" font-weight="500" fill="#9b8862"
+        letter-spacing="6" text-anchor="middle">— HOSTED HACKATHON —</text>
+
+  <!-- ===== TOP: ANTHROPIC ===== -->
+  <!-- Inline Anthropic mark scaled 240x240 (centered around x=960, y=200) -->
+  <g transform="translate(840 110) scale(10)">
+    <path fill="#1a1a1a" d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z"/>
+  </g>
+  <text x="960" y="380" font-family="'Helvetica Neue', Arial, sans-serif"
+        font-size="14" font-weight="500" fill="#6b6b6b"
+        letter-spacing="6" text-anchor="middle">ANTHROPIC</text>
+
+  <!-- ===== BOTTOM-LEFT: GREYCROFT ===== -->
+  <text x="480" y="860" font-family="'Georgia', 'Times New Roman', serif"
+        font-size="68" font-weight="400" fill="#1a1a1a"
+        text-anchor="middle">Greycroft</text>
+  <text x="480" y="900" font-family="'Helvetica Neue', Arial, sans-serif"
+        font-size="12" font-weight="500" fill="#9b8862"
+        letter-spacing="5" text-anchor="middle">— SPONSOR —</text>
+
+  <!-- ===== BOTTOM-RIGHT: CEREBRAL VALLEY ===== -->
+  <text x="1440" y="850" font-family="'Georgia', 'Times New Roman', serif"
+        font-size="48" font-weight="400" fill="#1a1a1a"
+        text-anchor="middle">Cerebral</text>
+  <text x="1440" y="900" font-family="'Georgia', 'Times New Roman', serif"
+        font-size="48" font-weight="400" fill="#1a1a1a"
+        text-anchor="middle">Valley</text>
+  <text x="1440" y="940" font-family="'Helvetica Neue', Arial, sans-serif"
+        font-size="12" font-weight="500" fill="#9b8862"
+        letter-spacing="5" text-anchor="middle">— HOST —</text>
+</svg>

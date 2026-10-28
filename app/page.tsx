@@ -233,12 +233,19 @@ export default function Home() {
           <span>Step inside</span>
           <ArrowUpRightIcon />
         </button>
-        <p
-          className="absolute bottom-12 font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)]"
+        <div
+          className="absolute bottom-12 font-sans text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-faint)] flex items-center gap-3"
           style={{ animation: stage === "sandy" ? "sandy-emerge 700ms ease-out 4000ms both" : "none" }}
         >
-          Rosewood Sand Hill · on shift
-        </p>
+          <span>Rosewood Sand Hill · on shift</span>
+          <span aria-hidden>·</span>
+          <Link
+            href="/sponsors"
+            className="hover:text-[var(--color-accent)] transition-colors border-b border-transparent hover:border-[var(--color-accent)] pb-px"
+          >
+            Sponsors
+          </Link>
+        </div>
       </section>
 
       {/* Phase 2 — Interior / triptych */}
