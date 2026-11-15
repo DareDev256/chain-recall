@@ -1,8 +1,30 @@
-# Sandy Chain-Recall
+# Sandy Chain-Recall: hotel guest recognition for the front desk
 
 > Recognition, without asking.
 
+A prototype of AI hotel guest recognition for luxury front desks, built in 8 hours at a hackathon: when a member arrives at any property, Claude reads their cross-property stay history through a mock Oracle OPERA adapter and puts a brief on the staff tablet before the guest reaches the desk.
+
 **🌐 Live demo:** [chain-recall.vercel.app](https://chain-recall.vercel.app) · **🖥 Manager Console:** [chain-recall.vercel.app/console](https://chain-recall.vercel.app/console) · **📚 Study deck:** [chain-recall.vercel.app/study](https://chain-recall.vercel.app/study)
+
+![The staff tablet after a demo arrival: the brief for an invented guest, with arrival intel, prep and in-room items, each tied to a past stay](docs/screenshots/2026-11-15_staff-brief.png)
+
+The screenshot is a local run with no API key, so it shows the hand-tuned cached brief the app falls back to when Claude is unavailable. All five demo guests are invented.
+
+## Quick start
+
+```bash
+git clone https://github.com/DareDev256/chain-recall.git
+cd chain-recall
+pnpm install
+cp .env.local.example .env.local   # add ANTHROPIC_API_KEY (and optionally ELEVENLABS_API_KEY)
+pnpm dev
+```
+
+Open `http://localhost:3000/console` and tap a guest's name to fire an arrival.
+
+License: MIT, see [LICENSE](LICENSE) (its scope note covers what the license does and does not include).
+
+## About
 
 The silent institutional memory of a luxury hotel chain. When a member walks into ANY property — even one they've never visited — front-of-house staff is briefed on who they are, what they prefer, and how to treat them. The AI is invisible to the guest. Staff is just magically attentive.
 
