@@ -28,7 +28,7 @@ License: MIT, see [LICENSE](LICENSE) (its scope note covers what the license doe
 
 The silent institutional memory of a luxury hotel chain. When a member walks into ANY property — even one they've never visited — front-of-house staff is briefed on who they are, what they prefer, and how to treat them. The AI is invisible to the guest. Staff is just magically attentive.
 
-**Built in 8 hours at the SF Anthropic Hackathon · May 16, 2026 · by James Olusoga (DareDev256) & Joshua Dare (Waleee7).**
+**Built in 8 hours at [Hospitality 2030: A Rosewood Sand Hill Hackathon](https://cerebralvalley.ai/e/rosewood-hospitality-2030) (Cerebral Valley, Menlo Park) · May 16, 2026 · by James Olusoga (DareDev256) & Joshua Dare (Waleee7).**
 
 **Partner technologies:** Anthropic Claude Opus 4.7 (tool use) · ElevenLabs Turbo + Multilingual v2 (custom Sandy & Hill voices) · Vercel · Next.js 16 · TypeScript · Server-Sent Events. Mock Oracle OPERA adapter at the integration boundary (production: Hapi event stream).
 
