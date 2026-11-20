@@ -1,3 +1,4 @@
+import { sharedGate, clientIp } from "@/lib/shared-gate";
 import { NextRequest } from "next/server";
 import { getCachedBrief } from "@/lib/cache";
 import { compose } from "@/lib/compose";
@@ -9,6 +10,14 @@ const DEFAULT_VOICE_ID = "JBFqnCBsd6RMkjVDRZzb"; // George — British butler ti
 const DEFAULT_MODEL_ID = "eleven_turbo_v2_5";
 
 export async function POST(req: NextRequest) {
+  // Spend gate (Workers KV, shared by every isolate): per-IP hourly and global daily caps.
+  const gate = await sharedGate(clientIp(req));
+  if (!gate.ok) {
+    return Response.json(
+      { error: gate.reason },
+      { status: gate.status, headers: gate.retryAfterSeconds ? { "Retry-After": String(gate.retryAfterSeconds) } : undefined },
+    );
+  }
   const { guestId, propertyId, voice } = await req.json();
   if (!guestId || !propertyId) {
     return Response.json(

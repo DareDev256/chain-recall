@@ -1,3 +1,4 @@
+import { sharedGate, clientIp } from "@/lib/shared-gate";
 import { NextRequest } from "next/server";
 
 export const runtime = "nodejs";
@@ -67,9 +68,21 @@ const VOICE_PRESETS: Record<string, {
  * VOICE_PRESETS above for the available registers. Defaults to neutral.
  */
 export async function POST(req: NextRequest) {
+  // Spend gate (Workers KV, shared by every isolate): per-IP hourly and global daily caps.
+  const gate = await sharedGate(clientIp(req));
+  if (!gate.ok) {
+    return Response.json(
+      { error: gate.reason },
+      { status: gate.status, headers: gate.retryAfterSeconds ? { "Retry-After": String(gate.retryAfterSeconds) } : undefined },
+    );
+  }
   const { text, voiceStyle, voice } = await req.json();
   if (!text || typeof text !== "string") {
     return Response.json({ error: "text required" }, { status: 400 });
+  }
+  // Cost cap per call: ElevenLabs bills per character.
+  if (text.length > 600) {
+    return Response.json({ error: "text too long (600 characters max)" }, { status: 413 });
   }
 
   const apiKey = process.env.ELEVENLABS_API_KEY;

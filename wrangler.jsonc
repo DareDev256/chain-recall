@@ -1,0 +1,12 @@
+{
+  // Cloudflare Workers via OpenNext (moved off Vercel 2026-11-19; Vercel Hobby team paused).
+  "name": "chain-recall",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
+  "workers_dev": true,
+  "observability": { "enabled": true },
+  // Shared spend gate (per-IP hourly + global daily), see src/lib/shared-gate.ts.
+  "kv_namespaces": [{ "binding": "SPEND_GATE", "id": "eba358eabd82471bb732e007efcf99f4" }]
+}
